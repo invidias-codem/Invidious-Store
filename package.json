@@ -19,6 +19,7 @@
     "next": "^14.2.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "shopify": "^4.5.2",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {

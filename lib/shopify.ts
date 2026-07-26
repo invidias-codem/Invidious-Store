@@ -138,11 +138,14 @@ export async function fetchProducts(first = 24): Promise<ShopifyProduct[]> {
     return [];
   }
 
-  const data = await client.request<{ products: { nodes: ShopifyProduct[] } }>(PRODUCTS_QUERY, {
-    first,
-  });
-
-  return data.products.nodes;
+  try {
+    const data = await client.request<{ products: { nodes: ShopifyProduct[] } }>(PRODUCTS_QUERY, {
+      first,
+    });
+    return data.products.nodes;
+  } catch {
+    return [];
+  }
 }
 
 export async function fetchProductByHandle(handle: string): Promise<ShopifyProduct | null> {
@@ -150,9 +153,12 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
     return null;
   }
 
-  const data = await client.request<{ productByHandle: ShopifyProduct }>(PRODUCT_BY_HANDLE_QUERY, {
-    handle,
-  });
-
-  return data.productByHandle ?? null;
+  try {
+    const data = await client.request<{ productByHandle: ShopifyProduct }>(PRODUCT_BY_HANDLE_QUERY, {
+      handle,
+    });
+    return data.productByHandle ?? null;
+  } catch {
+    return null;
+  }
 }
