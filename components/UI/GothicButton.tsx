@@ -18,15 +18,15 @@ export function GothicButton({
   onClick,
   type = 'button',
 }: GothicButtonProps) {
-  const base = 'font-display tracking-wide border transition-colors inline-flex items-center justify-center';
+  const base = 'font-display tracking-widest uppercase border transition-all inline-flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-white';
   const variants = {
-    primary: 'border-invidious-border bg-invidious-bg text-white hover:border-white',
-    outline: 'border-invidious-border bg-transparent text-white hover:border-white',
+    primary: 'border-white bg-white text-black hover:bg-black hover:text-white',
+    outline: 'border-white bg-transparent text-white hover:bg-white hover:text-black',
   };
   const sizes = {
-    sm: 'px-3 py-1.5 text-xs',
-    md: 'px-5 py-2 text-sm',
-    lg: 'px-7 py-3 text-base',
+    sm: 'px-4 py-2 text-[11px]',
+    md: 'px-5 py-2.5 text-xs',
+    lg: 'px-7 py-3 text-sm',
   };
 
   const className = cn(base, variants[variant], sizes[size]);

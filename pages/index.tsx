@@ -1,14 +1,5 @@
-import { GothicButton, InvidiousLogo } from '@/components/UI';
+import { InvidiousLogo } from '@/components/UI';
 import { AnimatedLogo } from '@/components/UI/AnimatedLogo';
-
-const CHAPTERS = [
-  { label: 'Manifesto', href: '/manifesto' },
-  { label: 'Archive', href: '/products' },
-  { label: 'Shop', href: '/products' },
-  { label: 'Forgery', href: '/forge' },
-  { label: 'Lookbook', href: '/' },
-  { label: 'Retro Cart', href: '/products' },
-];
 
 export default function Home() {
   return (
@@ -21,11 +12,6 @@ export default function Home() {
             Engineered for longevity, offline ownership, and controlled distribution.
             Clothing first. Retro sovereignty as side channel.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-3">
-            {CHAPTERS.map((item) => (
-              <GothicButton key={item.href} label={item.label} href={item.href} variant={item.href === '/' ? 'primary' : 'outline'} />
-            ))}
-          </div>
         </div>
 
         <div className="w-full flex justify-center">

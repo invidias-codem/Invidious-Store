@@ -1,15 +1,6 @@
 import Link from 'next/link';
 import { AnimatedLogo } from '@/components/UI/AnimatedLogo';
 
-const CHAPTERS = [
-  { label: 'Manifesto', href: '/manifesto' },
-  { label: 'Archive', href: '/products' },
-  { label: 'Shop', href: '/products' },
-  { label: 'Forgery', href: '/forge' },
-  { label: 'Lookbook', href: '/' },
-  { label: 'Retro Cart', href: '/products' },
-];
-
 export default function Manifesto() {
   return (
     <div className="min-h-screen bg-black text-gray-300 font-sans selection:bg-gray-700 p-6 md:p-12">
@@ -23,18 +14,7 @@ export default function Manifesto() {
       </nav>
 
       <main className="max-w-5xl mx-auto pb-24">
-        <div className="flex flex-col items-center text-center gap-8 mb-16">
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
-            {CHAPTERS.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="border border-invidious-border bg-invidious-bg px-3 py-2 text-[10px] uppercase tracking-widest hover:border-white hover:text-white transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-          </div>
+        <div className="flex flex-col items-center gap-8 mb-16">
           <div className="w-full flex justify-center">
             <AnimatedLogo />
           </div>
@@ -44,7 +24,7 @@ export default function Manifesto() {
           <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
             DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
           </p>
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
+          <h1 className="text-4xl md:text-6xl font-display font-black uppercase tracking-tighter text-white">
             The 3% Disruption
           </h1>
         </header>
