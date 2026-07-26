@@ -25,48 +25,52 @@ export default function Manifesto() {
             DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
           </p>
           <h1 className="text-4xl md:text-6xl font-display font-black uppercase tracking-tighter text-white">
-            The 3% Disruption
+            Invidious: The Manifesto
           </h1>
         </header>
 
         <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400 max-w-3xl mx-auto">
           <section className="space-y-6">
+            <h2 className="text-lg font-bold text-white uppercase tracking-widest">I. The Friction of Form</h2>
             <p>
-              We exist in a state of psychological friction. The modern conscious is caught between the biological drive for novelty and the neurological demand for the familiar. We crave the future, yet we seek shelter in the past.
-            </p>
-            <p className="text-white font-bold tracking-wide">Invidious is engineered at this exact intersection.</p>
-            <p>
-              We operate on a strict architectural heuristic: ninety-seven percent heritage structural DNA, three percent calculated disruption. We do not reinvent the heavyweight loopwheel cotton hoodie. We do not compromise the integrity of tailored calfskin. We preserve the foundation.
-            </p>
-            <p className="border-l border-zinc-700 pl-4 text-gray-300 italic">The intervention happens in the margins.</p>
-            <p>
-              It is the exposed raw overlock stitching mapping the structural tension of a garment. It is a solid .925 sterling silver industrial split-pin driven through a gothic cross. It is the integration of heavy-gauge mechanical hardware into silhouettes historically reserved for soft luxury. We treat historical religious iconography and industrial architecture as an open-source sample pack—looping and distorting familiar codes to recontextualize them for a new era.
+              Luxury is not found in quiet complacency. It lives in tension—the precise threshold where the familiar collides with the unexpected. We do not destroy the baseline; we corrupt it by three percent. A raw seam overlocked in silver thread. A gothic cross pinned with industrial precision. A classic silhouette re-engineered until it demands reflection. We reduce cognitive friction only to introduce intentional disruption.
             </p>
           </section>
 
           <div className="w-full h-px bg-zinc-800 my-12" />
 
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest mb-6">[ Manufacturing Consensus ]</h2>
+            <h2 className="text-lg font-bold text-white uppercase tracking-widest">II. Weight, Hardware, and Permanence</h2>
             <p>
-              True luxury is no longer defined merely by price or artificial exclusion. It is defined by uncompromising physical craftsmanship combined with digital sovereignty.
+              In a world consumed by ephemeral digital noise, we build physical artifacts engineered to endure. We measure value in weight, grain, and density:
             </p>
+            <ul className="list-disc pl-5 space-y-2 text-gray-400 marker:text-gray-500">
+              <li>450 GSM Japanese loopwheel cotton.</li>
+              <li>14oz raw selvedge denim.</li>
+              <li>Solid .925 sterling silver cast in heavy-gauge industrial motifs.</li>
+            </ul>
             <p>
-              While our physical artifacts are strictly scarce—limited by the sheer capacity of our metal casting houses and textile mills—our operational architecture remains entirely transparent. The codes, the structural blueprints, and the data layers are open.
+              We reject disposable trends. Every garment, button, and chain link is built as a permanent testament to high craftsmanship, designed to age, distress, and acquire character through wear.
             </p>
+          </section>
+
+          <div className="w-full h-px bg-zinc-800 my-12" />
+
+          <section className="space-y-6">
+            <h2 className="text-lg font-bold text-white uppercase tracking-widest">III. Architecture of Desire</h2>
             <p>
-              You are currently navigating an agentic, edge-rendered matrix designed to test your conviction before granting access to our archives. We reject the monolithic, closed-door engines of mass commerce.
+              <span className="italic text-gray-300">Invidious</span>—born from the human psychological drive toward the rare, the sacred, and the unattainable. We do not ask for attention through loud logos or artificial hype; we demand it through uncompromising structural integrity and subcultural authenticity. We build for the discerning few who view their wardrobe as cultural armor.
             </p>
-            <div className="bg-zinc-900 border border-zinc-800 p-6 space-y-2 mt-8">
-              <p className="text-white uppercase tracking-widest font-bold">The syndicate does not follow trends; we manufacture consensus.</p>
-              <p className="text-xs">Enter the Forge. Review the digital prototypes. Cast your vote.</p>
-              <p className="text-xs">
-                If the threshold is met, the artifact is forged in silver and cotton.
-                <br />
-                If not, it remains a phantom in the server.
-              </p>
-            </div>
-            <p className="text-white uppercase tracking-widest pt-4">This is a new era.</p>
+          </section>
+
+          <div className="w-full h-px bg-zinc-800 my-12" />
+
+          <section className="space-y-6">
+            <h2 className="text-lg font-bold text-white uppercase tracking-widest">IV. Open Code, Closed Scarcity</h2>
+            <p>
+              Our methodology is open source; our physical drops are uncompromisingly scarce. We share the blueprint, the code, and the intellectual process behind our creation, while strictly limiting the physical yield. Once a prototype phase closes, it returns to the archive.
+            </p>
+            <p className="text-white font-bold tracking-widest uppercase">No restocks. No compromise. Hardware for the new era.</p>
           </section>
         </article>
       </main>
