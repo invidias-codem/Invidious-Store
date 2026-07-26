@@ -8,6 +8,7 @@ type CartItem = {
   price: number;
   currency: string;
   quantity: number;
+  variantId?: string;
 };
 
 const CART_KEY = 'invidious-cart';
