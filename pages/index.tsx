@@ -1,23 +1,25 @@
 import { GothicButton, InvidiousLogo } from '@/components/UI';
+import { AnimatedLogo } from '@/components/UI/AnimatedLogo';
 
 export default function Home() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-24 sm:px-6">
-      <div className="max-w-3xl">
-        <p className="text-[10px] tracking-widest uppercase text-gray-500">
-          Gothic industrial luxury. Restricted drops.
-        </p>
-        <h1 className="mt-4 font-display text-5xl tracking-tight sm:text-6xl md:text-7xl">
-          Invidious
-        </h1>
-        <p className="mt-6 text-sm text-gray-400 sm:text-base">
-          Engineered for longevity, offline ownership, and controlled distribution.
-          Clothing first. Retro sovereignty as side channel.
-        </p>
-        <div className="mt-8 flex flex-wrap gap-3">
-          <GothicButton label="View the archive" href="/products" />
-          <GothicButton label="Read the manifesto" href="/manifesto" variant="outline" />
-          <GothicButton label="Enter the forge" href="/forge" variant="outline" />
+      <div className="flex flex-col items-start gap-10 lg:flex-row lg:items-center">
+        <div className="max-w-3xl">
+          <p className="text-[10px] tracking-widest uppercase text-gray-500">Gothic industrial luxury. Restricted drops.</p>
+          <h1 className="mt-4 font-display text-5xl tracking-tight sm:text-6xl md:text-7xl">Invidious</h1>
+          <p className="mt-6 text-sm text-gray-400 sm:text-base">
+            Engineered for longevity, offline ownership, and controlled distribution.
+            Clothing first. Retro sovereignty as side channel.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <GothicButton label="View the archive" href="/products" />
+            <GothicButton label="Read the manifesto" href="/manifesto" variant="outline" />
+            <GothicButton label="Enter the forge" href="/forge" variant="outline" />
+          </div>
+        </div>
+        <div className="w-full lg:w-auto">
+          <AnimatedLogo />
         </div>
       </div>
 

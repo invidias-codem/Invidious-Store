@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { AnimatedLogo } from '@/components/UI/AnimatedLogo';
 
 export default function Manifesto() {
   return (
@@ -13,13 +14,16 @@ export default function Manifesto() {
       </nav>
 
       <main className="max-w-4xl mx-auto pb-24">
-        <header className="mb-16 border-l-4 border-white pl-6">
-          <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
-            DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
-          </p>
-          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
-            The 3% Disruption
-          </h1>
+        <header className="mb-16 border-l-4 border-white pl-6 flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
+              DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
+            </p>
+            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
+              The 3% Disruption
+            </h1>
+          </div>
+          <AnimatedLogo className="hidden md:block" />
         </header>
 
         <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400">
