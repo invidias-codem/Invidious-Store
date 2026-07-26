@@ -1,7 +1,5 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
-
-
 import { CartProvider } from '@/components/CartProvider';
 import { CartIsland } from '@/components/CartIsland';
 import { GothicButton, InvidiousLogo } from '@/components/UI';
@@ -29,7 +27,7 @@ export default function App({ Component, pageProps }: AppProps) {
               <a href="/products" className="hover:text-white">Archive</a>
               <a href="/manifesto" className="hover:text-white">Manifesto</a>
               <a href="/forge" className="hover:text-white">Forge</a>
-              <a href="/products" className="hover:text-white">Contact</a>
+              <a href="#" className="hover:text-white">Contact</a>
             </nav>
             <CartButton />
           </div>
