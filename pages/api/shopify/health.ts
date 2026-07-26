@@ -3,7 +3,7 @@ import { client, PRODUCTS_QUERY } from '@/lib/shopify';
 
 export const runtime = 'edge';
 
-export async function GET() {
+export default async function handler() {
   try {
     const data = await client.request<{ products: { nodes: Array<{ id: string }> } }>(PRODUCTS_QUERY, {
       first: 1,
