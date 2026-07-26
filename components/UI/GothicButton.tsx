@@ -8,6 +8,7 @@ interface GothicButtonProps {
   href?: string;
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
+  disabled?: boolean;
 }
 
 export function GothicButton({
