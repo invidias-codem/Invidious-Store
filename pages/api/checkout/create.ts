@@ -32,7 +32,7 @@ function buildLineItems(items: CheckoutItem[]) {
 
 export default async function handler(request: Request) {
   try {
-    const body = (await request.json().catch(() => ({ items: [] }))) as { items?: CartItem[] };
+    const body = (await request.json().catch(() => ({ items: [] }))) as { items?: CheckoutItem[] };
     const items = body.items ?? [];
 
     if (!items.length) {
