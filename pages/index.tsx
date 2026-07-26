@@ -1,4 +1,4 @@
-import { GothicButton, SilverDaggerLogo } from '@/components/UI';
+import { GothicButton, InvidiousLogo } from '@/components/UI';
 
 export default function Home() {
   return (

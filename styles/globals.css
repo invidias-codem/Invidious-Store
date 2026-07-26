@@ -9,14 +9,6 @@
   }
 }
 
-@font-face {
-  font-family: 'display';
-  src: url('/fonts/UnifrakturMaguntia-Regular.woff2') format('woff2');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
 body {
   background-color: rgb(var(--background));
   color: rgb(var(--foreground));
