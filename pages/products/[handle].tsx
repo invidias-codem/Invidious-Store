@@ -1,4 +1,5 @@
 import { fetchProductByHandle } from '@/lib/shopify';
+import { useState } from 'react';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
 import { useCart } from '@/components/CartProvider';
