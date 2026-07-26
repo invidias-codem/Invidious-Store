@@ -1,38 +1,94 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { GothicButton } from '@/components/UI';
+
+const CHAPTERS = [
+  { label: 'Manifesto', href: '/manifesto' },
+  { label: 'Archive', href: '/products' },
+  { label: 'Shop', href: '/products' },
+  { label: 'Forgery', href: '/forge' },
+  { label: 'Lookbook', href: '/' },
+  { label: 'Retro Cart', href: '/products' },
+];
 
 export function AnimatedLogo({ className = '' }: { className?: string }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [hovering, setHovering] = useState(false);
+
+  useEffect(() => {
+    if (!hovering) {
+      setTilt({ x: 0, y: 0 });
+      return;
+    }
+    const tick = () => {
+      if (!containerRef.current) return;
+      setTilt((prev) => ({
+        x: prev.x + (0 - prev.x) * 0.08,
+        y: prev.y + (0 - prev.y) * 0.08,
+      }));
+      requestAnimationFrame(tick);
+    };
+    const id = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(id);
+  }, [hovering]);
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const nx = (e.clientX - cx) / (rect.width / 2);
+    const ny = (e.clientY - cy) / (rect.height / 2);
+    setTilt({ x: ny * -6, y: nx * 6 });
+  };
+
   return (
     <div
+      ref={containerRef}
       className={`relative select-none ${className}`}
-      style={{ perspective: '1400px' }}
+      style={{ perspective: '1200px' }}
+      onPointerMove={onPointerMove}
+      onPointerEnter={() => setHovering(true)}
+      onPointerLeave={() => setHovering(false)}
     >
       <div
-        className="relative w-[280px] h-[280px] sm:w-[320px] sm:h-[320px]"
+        className="relative mx-auto w-[260px] sm:w-[300px]"
         style={{
           transformStyle: 'preserve-3d',
-          animation: 'invBoxSpin 8s linear infinite',
+          transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+          transition: hovering ? 'none' : 'transform 400ms ease-out',
         }}
       >
-        <div className="absolute inset-0 flex items-center justify-center border border-zinc-700 bg-black" style={{ transform: 'translateZ(24px)' }}>
-          <Image src="/invidious-logo.jpg" alt="Invidious Crest" width={320} height={320} className="h-full w-full object-contain select-none" priority />
-        </div>
-
-        <div className="absolute inset-0 flex items-center justify-center border border-zinc-700 bg-black" style={{ transform: 'translateZ(-24px) rotateY(180deg)' }}>
-          <Image src="/invidious-logo.jpg" alt="Invidious Crest Back" width={320} height={320} className="h-full w-full object-contain select-none" style={{ transform: 'scaleX(-1)' }} priority />
-        </div>
-
-        <div className="absolute inset-y-0 left-0 w-[48px] bg-zinc-800 border-r border-zinc-700" style={{ transform: 'rotateY(-90deg) translateZ(0px)' }} />
-        <div className="absolute inset-y-0 right-0 w-[48px] bg-zinc-800 border-l border-zinc-700" style={{ transform: 'rotateY(90deg) translateZ(0px)' }} />
+        <Image
+          src="/invidious-logo.jpg"
+          alt="Invidious Crest"
+          width={320}
+          height={320}
+          priority
+          className="h-auto w-full drop-shadow-2xl"
+        />
       </div>
 
-      <style jsx global>{`
-        @keyframes invBoxSpin {
-          from { transform: rotateY(0deg); }
-          to { transform: rotateY(360deg); }
-        }
-      `}</style>
+      <nav className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3">
+        {CHAPTERS.map((item) => (
+          <Link key={item.href} href={item.href}>
+            <GothicButton
+              label={item.label}
+              href={item.href}
+              variant={item.href === '/' ? 'primary' : 'outline'}
+              size="sm"
+            />
+          </Link>
+        ))}
+      </nav>
+
+      <p className="mt-3 text-[10px] font-mono uppercase tracking-widest text-gray-600 text-center">
+        Move to inspect
+      </p>
     </div>
   );
 }
