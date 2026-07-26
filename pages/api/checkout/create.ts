@@ -3,7 +3,7 @@ import { fetchProductByHandle } from '@/lib/shopify';
 
 export const runtime = 'edge';
 
-type CartItem = {
+type CheckoutItem = {
   id: string;
   title: string;
   price: number;
@@ -11,17 +11,17 @@ type CartItem = {
   variantId?: string;
 };
 
-function buildLineItems(items: CartItem[]) {
-  const uniqueVariants = new Map<string, CartItem>();
+function buildLineItems(items: CheckoutItem[]) {
+  const uniqueVariants = new Map<string, CheckoutItem & { quantity: number }>();
 
   for (const item of items) {
     if (!item.variantId) continue;
     const existing = uniqueVariants.get(item.variantId);
     if (existing) {
-      existing.quantity = (existing.quantity || 1) + 1;
+      existing.quantity += 1;
       continue;
     }
-    uniqueVariants.set(item.variantId, { ...item, quantity: 1 });
+    uniqueVariants.set(item.variantId, { ...item, quantity: 1 } as CheckoutItem & { quantity: number });
   }
 
   return Array.from(uniqueVariants.values()).map((item) => ({
