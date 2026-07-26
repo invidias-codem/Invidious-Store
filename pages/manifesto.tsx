@@ -1,10 +1,19 @@
 import Link from 'next/link';
 import { AnimatedLogo } from '@/components/UI/AnimatedLogo';
 
+const CHAPTERS = [
+  { label: 'Manifesto', href: '/manifesto' },
+  { label: 'Archive', href: '/products' },
+  { label: 'Shop', href: '/products' },
+  { label: 'Forgery', href: '/forge' },
+  { label: 'Lookbook', href: '/' },
+  { label: 'Retro Cart', href: '/products' },
+];
+
 export default function Manifesto() {
   return (
     <div className="min-h-screen bg-black text-gray-300 font-sans selection:bg-gray-700 p-6 md:p-12">
-      <nav className="border-b border-zinc-800 pb-6 mb-12 flex justify-between items-center max-w-4xl mx-auto">
+      <nav className="border-b border-zinc-800 pb-6 mb-12 flex justify-between items-center max-w-5xl mx-auto">
         <Link href="/" className="text-xl font-bold tracking-widest uppercase text-white hover:text-gray-400 transition-colors">
           Invidious
         </Link>
@@ -13,20 +22,34 @@ export default function Manifesto() {
         </Link>
       </nav>
 
-      <main className="max-w-4xl mx-auto pb-24">
-        <header className="mb-16 border-l-4 border-white pl-6 flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
-              DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
-            </p>
-            <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
-              The 3% Disruption
-            </h1>
+      <main className="max-w-5xl mx-auto pb-24">
+        <div className="flex flex-col items-center text-center gap-8 mb-16">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            {CHAPTERS.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="border border-invidious-border bg-invidious-bg px-3 py-2 text-[10px] uppercase tracking-widest hover:border-white hover:text-white transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-          <AnimatedLogo className="hidden md:block" />
+          <div className="w-full flex justify-center">
+            <AnimatedLogo />
+          </div>
+        </div>
+
+        <header className="mb-16 border-l-4 border-white pl-6 max-w-3xl mx-auto text-left">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
+            DOCUMENT_REF: INV-001 // STATUS: IMMUTABLE
+          </p>
+          <h1 className="text-4xl md:text-6xl font-black uppercase tracking-tighter text-white">
+            The 3% Disruption
+          </h1>
         </header>
 
-        <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400">
+        <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400 max-w-3xl mx-auto">
           <section className="space-y-6">
             <p>
               We exist in a state of psychological friction. The modern conscious is caught between the biological drive for novelty and the neurological demand for the familiar. We crave the future, yet we seek shelter in the past.
