@@ -32,7 +32,7 @@ async function getAccessToken() {
   return data;
 }
 
-export async function POST() {
+export default async function handler() {
   try {
     const token = await getAccessToken();
 
