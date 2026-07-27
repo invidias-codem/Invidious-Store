@@ -3,16 +3,18 @@
 import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { GothicButton } from '@/components/UI';
+import { GothicButton, GOTHIC_COLORS } from '@/components/UI';
 
-const CHAPTERS = [
-  { label: 'About', href: '/about' },
-  { label: 'Manifesto', href: '/manifesto' },
-  { label: 'Archive', href: '/products' },
-  { label: 'Shop', href: '/products' },
-  { label: 'Forgery', href: '/forge' },
-  { label: 'Lookbook', href: '/' },
-  { label: 'Retro Cart', href: '/products' },
+type Chapter = { label: string; href: string; color: keyof typeof GOTHIC_COLORS };
+
+const CHAPTERS: Chapter[] = [
+  { label: 'About', href: '/about', color: 'blood' },
+  { label: 'Manifesto', href: '/manifesto', color: 'oxide' },
+  { label: 'Archive', href: '/products', color: 'iron' },
+  { label: 'Shop', href: '/products', color: 'coal' },
+  { label: 'Forgery', href: '/forge', color: 'oxide' },
+  { label: 'Lookbook', href: '/', color: 'bone' },
+  { label: 'Retro Cart', href: '/products', color: 'iron' },
 ];
 
 export function AnimatedLogo({ className = '' }: { className?: string }) {
@@ -58,12 +60,7 @@ export function AnimatedLogo({ className = '' }: { className?: string }) {
       <nav className="mt-6 flex flex-wrap justify-center gap-2 sm:gap-3">
         {CHAPTERS.map((item) => (
           <Link key={item.href} href={item.href}>
-            <GothicButton
-              label={item.label}
-              href={item.href}
-              variant={item.href === '/' || item.href === '/about' ? 'primary' : 'outline'}
-              size="sm"
-            />
+            <GothicButton label={item.label} href={item.href} color={item.color} size="sm" />
           </Link>
         ))}
       </nav>
