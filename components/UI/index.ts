@@ -1,3 +1,3 @@
 export { AnimatedLogo } from './AnimatedLogo';
-export { GothicButton } from './GothicButton';
+export { GothicButton, GOTHIC_COLORS } from './GothicButton';
 export { InvidiousLogo } from './InvidiousLogo';

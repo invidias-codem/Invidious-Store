@@ -44,7 +44,7 @@ export default function CheckoutPage() {
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
             <GothicButton label="Place order" onClick={clearCart} />
-            <GothicButton label="Return to archive" href="/products" variant="outline" />
+            <GothicButton label="Return to archive" href="/products" variant="ghost" />
           </div>
         </div>
       )}
