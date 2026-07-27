@@ -1,9 +1,14 @@
 import { GraphQLClient } from 'graphql-request';
 
+function normalizeStoreDomain(domain?: string) {
+  if (!domain) return 'your-store.myshopify.com';
+  const trimmed = domain.trim().replace(/https?:\/\//, '').replace(/\/$/, '');
+  if (trimmed.includes('.myshopify.com')) return trimmed;
+  return `${trimmed}.myshopify.com`;
+}
+
 export const client = new GraphQLClient(
-  process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN
-    ? `https://${process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN}/api/2024-04/graphql.json`
-    : 'https://your-store.myshopify.com/api/2024-04/graphql.json',
+  `https://${normalizeStoreDomain(process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN)}/api/2024-04/graphql.json`,
   {
     headers: {
       'X-Shopify-Storefront-Access-Token':
