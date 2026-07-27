@@ -50,4 +50,17 @@ export const mockForgeArtifacts: ForgeArtifact[] = [
       { url: '/assets/founder-portrait.jpg', altText: 'Invidious T-Shirt USdz Test' },
     ],
   },
+  {
+    id: 'forge-04',
+    handle: 'premium-hoodie',
+    title: 'PREMIUM HOODIE [TEST]',
+    status: 'MESH_PENDING',
+    description: 'USDZ test artifact. No GLB yet; iOS AR should resolve from this USDZ.',
+    voteThreshold: 25,
+    glbUrl: null,
+    usdzUrl: '/3d/premium-hoodie/artifact.usdz',
+    images: [
+      { url: '/assets/founder-portrait.jpg', altText: 'Premium Hoodie USdz Test' },
+    ],
+  },
 ];
