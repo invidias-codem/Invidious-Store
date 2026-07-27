@@ -1,5 +1,5 @@
 import { fetchProductByHandle } from '@/lib/shopify';
-import { notFound } from 'next/navigation';
+import { notFound } from 'next';
 import { useState } from 'react';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
@@ -181,8 +181,7 @@ function ProductDetail({ product }: { product: Product }) {
 
 export default function ProductPage({ product }: ProductPageProps) {
   if (!product) {
-    notFound();
-    return null;
+    return notFound();
   }
   return <ProductDetail product={product} />;
 }
