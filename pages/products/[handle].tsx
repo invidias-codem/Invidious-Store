@@ -1,5 +1,4 @@
 import { fetchProductByHandle } from '@/lib/shopify';
-import notFound from 'next';
 import { useState } from 'react';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
@@ -181,7 +180,11 @@ function ProductDetail({ product }: { product: Product }) {
 
 export default function ProductPage({ product }: ProductPageProps) {
   if (!product) {
-    return notFound();
+    return (
+      <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
+        [Artifact Not Found in Archive]
+      </div>
+    );
   }
   return <ProductDetail product={product} />;
 }
@@ -197,7 +200,7 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: { params: { handle: string } }) {
   try {
     const handle = Array.isArray(params?.handle) ? params.handle[0] : params?.handle;
-    if (!handle) return { notFound: true };
+    if (!handle) return { props: { product: null }, revalidate: 60 };
     const raw = await fetchProductByHandle(handle ?? '');
     const product = normalizeProduct(raw);
     return {
