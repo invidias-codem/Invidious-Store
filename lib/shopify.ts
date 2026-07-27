@@ -57,6 +57,10 @@ export const PRODUCTS_QUERY = `#graphql
             sku
           }
         }
+        metafields(identifiers: [{namespace: "custom", key: "size_guide"}]) {
+          key
+          value
+        }
       }
     }
   }
@@ -101,6 +105,10 @@ export const PRODUCT_BY_HANDLE_QUERY = `#graphql
           sku
         }
       }
+      metafields(identifiers: [{namespace: "custom", key: "size_guide"}]) {
+        key
+        value
+      }
     }
   }
 `;
@@ -123,6 +131,7 @@ export type ShopifyProduct = {
       sku?: string;
     }[];
   };
+  metafields?: { key: string; value: string }[];
 };
 
 export async function fetchProducts(first = 24): Promise<ShopifyProduct[]> {
