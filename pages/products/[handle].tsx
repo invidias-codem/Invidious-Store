@@ -1,5 +1,5 @@
 import { fetchProductByHandle } from '@/lib/shopify';
-import { notFound } from 'next';
+import notFound from 'next';
 import { useState } from 'react';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
