@@ -60,10 +60,10 @@ export default function ForgePage() {
             <div key={artifact.id} className="grid grid-cols-1 gap-10 lg:grid-cols-2">
               <div>
                 <ArtifactViewer
-                  glbSrc={artifact.modelUrl}
-                  usdzSrc={artifact.modelUrl ? artifact.modelUrl.replace('.glb', '.usdz') : ''}
+                  glbSrc={artifact.glbUrl ?? undefined}
+                  usdzSrc={artifact.usdzUrl ?? undefined}
+                  posterSrc={artifact.images[0]?.url}
                   altText={artifact.title}
-                  fallbackImage={artifact.images[0]}
                 />
                 <p className="mt-2 text-[10px] font-mono uppercase tracking-widest text-gray-500">ID: {artifact.id}</p>
               </div>

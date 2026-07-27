@@ -5,7 +5,8 @@ export interface ForgeArtifact {
   status: 'RENDER_COMPLETE' | 'MESH_PENDING' | 'ARCHIVED';
   description: string;
   voteThreshold: number;
-  modelUrl: string | null;
+  glbUrl: string | null;
+  usdzUrl: string | null;
   images: { url: string; altText: string }[];
 }
 
@@ -17,7 +18,8 @@ export const mockForgeArtifacts: ForgeArtifact[] = [
     status: 'MESH_PENDING',
     description: 'Volumetric scan pending. 450 GSM Japanese loopwheel cotton structural test.',
     voteThreshold: 50,
-    modelUrl: null,
+    glbUrl: null,
+  usdzUrl: null,
     images: [
       { url: '/assets/forge-hoodie-front.jpg', altText: 'Chrome-Spun Hoodie Front Proto' },
     ],
@@ -29,7 +31,8 @@ export const mockForgeArtifacts: ForgeArtifact[] = [
     status: 'MESH_PENDING',
     description: 'Custom .925 sterling silver hardware placement tests.',
     voteThreshold: 75,
-    modelUrl: null,
+    glbUrl: null,
+  usdzUrl: null,
     images: [
       { url: '/assets/forge-cargo-detail.jpg', altText: 'Obsidian Cargo Silver Hardware Detail' },
     ],
