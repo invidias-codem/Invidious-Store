@@ -35,7 +35,7 @@ interface RawProduct {
   metafields?: { key: string; value: string }[];
 }
 
-function normalizeProduct(raw: any): Product | null {
+function normalizeProduct(raw: RawProduct): Product | null {
   if (!raw || typeof raw !== 'object') return null;
   const handle = typeof raw.handle === 'string' ? raw.handle : '';
   if (!handle) return null;
@@ -178,7 +178,14 @@ function ProductDetail({ product }: { product: Product }) {
   );
 }
 
-export default function ProductPage({ product }: ProductPageProps) {
+export default function ProductPage({ product, error }: ProductPageProps) {
+  if (error) {
+    return (
+      <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
+        [Artifact Error: {error}]
+      </div>
+    );
+  }
   if (!product) {
     return (
       <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
@@ -191,6 +198,7 @@ export default function ProductPage({ product }: ProductPageProps) {
 
 type ProductPageProps = {
   product: Product | null;
+  error?: string;
 };
 
 export async function getStaticPaths() {
@@ -200,19 +208,30 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: { params: { handle: string } }) {
   try {
     const handle = Array.isArray(params?.handle) ? params.handle[0] : params?.handle;
-    if (!handle) return { props: { product: null }, revalidate: 60 };
+    if (!handle) {
+      return { props: { product: null, error: 'Missing product handle' }, revalidate: 60 };
+    }
+
     const raw = await fetchProductByHandle(handle ?? '');
     const product = normalizeProduct(raw);
+
+    if (!product) {
+      return { props: { product: null }, revalidate: 60 };
+    }
+
     return {
       props: {
         product,
       },
       revalidate: 60,
     };
-  } catch {
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    console.error('[PDP] getStaticProps failed:', message, err);
     return {
       props: {
         product: null,
+        error: message,
       },
       revalidate: 60,
     };
