@@ -136,7 +136,7 @@ function ProductDetail({ product }: { product: Product }) {
               </div>
             )}
 
-            <GothicButton label="Return to archive" href="/products" variant="outline" />
+            <GothicButton label="Return to archive" href="/products" variant="ghost" />
           </div>
         </div>
       </div>

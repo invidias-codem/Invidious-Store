@@ -92,7 +92,7 @@ export default function ForgePage() {
                 <GothicButton
                   label={current.voted ? 'Vote Recorded' : 'Back This Artifact'}
                   onClick={() => voteFor(artifact.id)}
-                  variant={current.voted ? 'outline' : 'primary'}
+                  variant={current.voted ? 'ghost' : 'filled'}
                 />
               </div>
             </div>
