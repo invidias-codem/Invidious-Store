@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { GothicButton } from '@/components/UI';
 
 const CHAPTERS = [
+  { label: 'About', href: '/about' },
   { label: 'Manifesto', href: '/manifesto' },
   { label: 'Archive', href: '/products' },
   { label: 'Shop', href: '/products' },
@@ -60,7 +61,7 @@ export function AnimatedLogo({ className = '' }: { className?: string }) {
             <GothicButton
               label={item.label}
               href={item.href}
-              variant={item.href === '/' ? 'primary' : 'outline'}
+              variant={item.href === '/' || item.href === '/about' ? 'primary' : 'outline'}
               size="sm"
             />
           </Link>
