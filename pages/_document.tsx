@@ -4,9 +4,6 @@ export default function Document() {
   return (
     <Html lang="en">
       <Head>
-        <meta name="application-name" content="Invidious" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -14,7 +11,8 @@ export default function Document() {
           rel="stylesheet"
         />
       </Head>
-      <body className="antialiased">
+      <body>
+        <div className="fixed inset-0 -z-10 bg-metallic-wash" aria-hidden="true" />
         <Main />
         <NextScript />
       </body>
