@@ -154,8 +154,12 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
     return null;
   }
 
+  if (!handle || typeof handle !== 'string') {
+    return null;
+  }
+
   try {
-    const data = await client.request<{ productByHandle: ShopifyProduct }>(PRODUCT_BY_HANDLE_QUERY, {
+    const data = await client.request<{ productByHandle: ShopifyProduct | null }>(PRODUCT_BY_HANDLE_QUERY, {
       handle,
     });
     return data.productByHandle ?? null;
