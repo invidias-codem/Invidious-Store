@@ -1,4 +1,5 @@
 import { fetchProductByHandle } from '@/lib/shopify';
+import { notFound } from 'next/navigation';
 import { useState } from 'react';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
@@ -24,16 +25,31 @@ type Product = {
   metafields?: { key: string; value: string }[];
 };
 
-type ProductPageProps = {
-  product: Product | null;
-};
+function normalizeProduct(raw: any): Product | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const handle = raw.handle;
+  if (!handle || typeof handle !== 'string') return null;
+  return {
+    handle,
+    title: typeof raw.title === 'string' ? raw.title : 'Untitled Artifact',
+    description: typeof raw.description === 'string' ? raw.description : '',
+    priceRange: raw.priceRange && raw.priceRange.minVariantPrice
+      ? raw.priceRange
+      : { minVariantPrice: { amount: '0.00', currencyCode: 'USD' } },
+    featuredImage: raw.featuredImage && typeof raw.featuredImage.url === 'string' ? raw.featuredImage : undefined,
+    images: Array.isArray(raw.images?.nodes) ? raw.images.nodes : [],
+    variants: Array.isArray(raw.variants?.nodes) ? raw.variants.nodes : [],
+    metafields: Array.isArray(raw.metafields) ? raw.metafields : [],
+  };
+}
 
 function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart();
-  const images = (product.images?.nodes ?? []).map((node) => ({
-    url: node.url,
-    altText: node.altText ?? product.title,
-  }));
+  const images = (product.images ?? []).map((node) => ({
+    url: typeof node?.url === 'string' ? node.url : '',
+    altText: typeof node?.altText === 'string' ? node.altText : product.title,
+  })).filter((img) => Boolean(img.url));
+
   const variants = product.variants?.nodes ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id ?? '');
   const [showSizeGuide, setShowSizeGuide] = useState(false);
@@ -67,9 +83,11 @@ function ProductDetail({ product }: { product: Product }) {
             </p>
           </div>
 
-          <p className="text-xs font-mono leading-relaxed text-gray-400 uppercase tracking-wider">
-            {product.description}
-          </p>
+          {product.description ? (
+            <p className="text-xs font-mono leading-relaxed text-gray-400 uppercase tracking-wider">
+              {product.description}
+            </p>
+          ) : null}
 
           <div className="space-y-3">
             {variants.length > 0 && (
@@ -146,29 +164,38 @@ function ProductDetail({ product }: { product: Product }) {
 
 export default function ProductPage({ product }: ProductPageProps) {
   if (!product) {
-    return (
-      <div className="min-h-screen bg-black text-gray-400 flex items-center justify-center font-mono text-xs uppercase tracking-widest">
-        [Artifact Not Found in Archive]
-      </div>
-    );
+    notFound();
+    return null;
   }
-
-  return (
-    <ProductDetail product={product} />
-  );
+  return <ProductDetail product={product} />;
 }
+
+type ProductPageProps = {
+  product: Product | null;
+};
 
 export async function getStaticPaths() {
   return { paths: [], fallback: 'blocking' };
 }
 
 export async function getStaticProps({ params }: { params: { handle: string } }) {
-  const handle = Array.isArray(params?.handle) ? params.handle[0] : params?.handle;
-  const product = await fetchProductByHandle(handle ?? '');
-  return {
-    props: {
-      product,
-    },
-    revalidate: 60,
-  };
+  try {
+    const handle = Array.isArray(params?.handle) ? params.handle[0] : params?.handle;
+    if (!handle) return { notFound: true };
+    const raw = await fetchProductByHandle(handle ?? '');
+    const product = normalizeProduct(raw);
+    return {
+      props: {
+        product,
+      },
+      revalidate: 60,
+    };
+  } catch {
+    return {
+      props: {
+        product: null,
+      },
+      revalidate: 60,
+    };
+  }
 }
