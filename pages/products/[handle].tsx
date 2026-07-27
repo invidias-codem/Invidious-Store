@@ -73,7 +73,7 @@ function ProductDetail({ product }: { product: Product }) {
   const selectedVariant = variants.find((v) => v.id === selectedVariantId) ?? variants[0];
   const sizeFromTitle = (title?: string) => title?.split('/')[0]?.trim();
   const colorFromTitle = (title?: string) => title?.split('/')[1]?.trim();
-  const sizeGuideRaw = product.metafields?.find((m) => m.key === 'size_guide')?.value;
+  const sizeGuideRaw = product.metafields?.find((m) => m?.key === 'size_guide')?.value;
 
   let sizeGuide: Record<string, number | string> | null = null;
   try {
