@@ -31,9 +31,9 @@ export default function Manifesto() {
 
         <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400 max-w-3xl mx-auto">
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest">I. The Friction of Form</h2>
+            <h2 className="text-lg font-bold text-white uppercase tracking-widest">I. The Genesis of Cognitive Harvesting</h2>
             <p>
-              Luxury is not found in quiet complacency. It lives in tension—the precise threshold where the familiar collides with the unexpected. We do not destroy the baseline; we corrupt it by three percent. A raw seam overlocked in silver thread. A gothic cross pinned with industrial precision. A classic silhouette re-engineered until it demands reflection. We reduce cognitive friction only to introduce intentional disruption.
+              We grew up in the digital panopticon, watching other lives unfold in hyper-saturated pixels. What began as admiration for the lifestyles represented on our screens evolved into a deeper understanding of the modern human condition: we were not just consumers; we were the crop. Our attention was harvested to feed a global machine designed to cultivate constant, quiet envy.
             </p>
           </section>
 
