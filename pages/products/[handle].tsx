@@ -20,24 +20,45 @@ type Product = {
   description: string;
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   featuredImage?: { url: string; altText?: string };
-  images?: { nodes: { url: string; altText?: string }[] };
-  variants?: { nodes: ProductVariant[] };
+  images?: { url: string; altText?: string }[];
+  variants?: ProductVariant[];
   metafields?: { key: string; value: string }[];
 };
 
+interface RawProduct {
+  handle?: string;
+  title?: string;
+  description?: string;
+  priceRange?: { minVariantPrice?: { amount?: string; currencyCode?: string } };
+  featuredImage?: { url?: string; altText?: string };
+  images?: { nodes?: { url?: string; altText?: string }[] };
+  variants?: { nodes?: ProductVariant[] };
+  metafields?: { key: string; value: string }[];
+}
+
 function normalizeProduct(raw: any): Product | null {
   if (!raw || typeof raw !== 'object') return null;
-  const handle = raw.handle;
-  if (!handle || typeof handle !== 'string') return null;
+  const handle = typeof raw.handle === 'string' ? raw.handle : '';
+  if (!handle) return null;
+
+  const normalizeImage = (node: any) => ({
+    url: typeof node?.url === 'string' ? node.url : '',
+    altText: typeof node?.altText === 'string' ? node.altText : undefined,
+  });
+
+  const price = raw.priceRange?.minVariantPrice && typeof raw.priceRange.minVariantPrice.amount === 'string'
+    ? raw.priceRange.minVariantPrice
+    : { amount: '0.00', currencyCode: 'USD' };
+
   return {
     handle,
     title: typeof raw.title === 'string' ? raw.title : 'Untitled Artifact',
     description: typeof raw.description === 'string' ? raw.description : '',
-    priceRange: raw.priceRange && raw.priceRange.minVariantPrice
-      ? raw.priceRange
-      : { minVariantPrice: { amount: '0.00', currencyCode: 'USD' } },
+    priceRange: { minVariantPrice: price },
     featuredImage: raw.featuredImage && typeof raw.featuredImage.url === 'string' ? raw.featuredImage : undefined,
-    images: Array.isArray(raw.images?.nodes) ? raw.images.nodes : [],
+    images: Array.isArray(raw.images?.nodes)
+      ? raw.images.nodes.map(normalizeImage).filter((img: any) => Boolean(img.url))
+      : [],
     variants: Array.isArray(raw.variants?.nodes) ? raw.variants.nodes : [],
     metafields: Array.isArray(raw.metafields) ? raw.metafields : [],
   };
@@ -45,12 +66,8 @@ function normalizeProduct(raw: any): Product | null {
 
 function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart();
-  const images = (product.images ?? []).map((node) => ({
-    url: typeof node?.url === 'string' ? node.url : '',
-    altText: typeof node?.altText === 'string' ? node.altText : product.title,
-  })).filter((img) => Boolean(img.url));
-
-  const variants = product.variants?.nodes ?? [];
+  const images = product.images ?? [];
+  const variants = product.variants ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id ?? '');
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
