@@ -51,7 +51,7 @@ export function ArtifactViewer({ glbSrc, usdzSrc, posterSrc, altText = '3D Artif
   }, []);
 
   const show3D = Boolean(glbSrc) && !meshError && isViewerDefined;
-  const showFallback = !show3D;
+  const showFallback = !Boolean(glbSrc) || meshError || !isViewerDefined;
 
   return (
     <div className="relative w-full h-full min-h-[500px] bg-zinc-900 border border-zinc-800">
