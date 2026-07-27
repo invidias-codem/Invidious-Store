@@ -7,7 +7,7 @@ import { useCart } from '@/components/CartProvider';
 type ProductVariant = {
   id: string;
   title: string;
-  available: boolean;
+  availableForSale: boolean;
   price: { amount: string; currencyCode: string };
   selectedOptions?: { name: string; value: string }[];
   sku?: string;
