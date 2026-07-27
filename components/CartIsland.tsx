@@ -57,7 +57,7 @@ export function CartIsland() {
                 </div>
                 <div className="mt-3 flex gap-2">
                   <GothicButton label="Checkout" href="/checkout" />
-                  <GothicButton variant="outline" label="Clear" onClick={clearCart} />
+                  <GothicButton variant="ghost" label="Clear" onClick={clearCart} />
                 </div>
               </div>
             )}
