@@ -45,8 +45,8 @@ function normalizeProduct(raw: RawProduct): Product | null {
     altText: typeof node?.altText === 'string' ? node.altText : undefined,
   });
 
-  const price = raw.priceRange?.minVariantPrice && typeof raw.priceRange.minVariantPrice.amount === 'string'
-    ? raw.priceRange.minVariantPrice
+  const price: { amount: string; currencyCode: string } = raw.priceRange?.minVariantPrice && typeof raw.priceRange.minVariantPrice.amount === 'string'
+    ? ({ amount: raw.priceRange.minVariantPrice.amount, currencyCode: raw.priceRange.minVariantPrice.currencyCode ?? 'USD' } as { amount: string; currencyCode: string })
     : { amount: '0.00', currencyCode: 'USD' };
 
   return {
@@ -54,7 +54,7 @@ function normalizeProduct(raw: RawProduct): Product | null {
     title: typeof raw.title === 'string' ? raw.title : 'Untitled Artifact',
     description: typeof raw.description === 'string' ? raw.description : '',
     priceRange: { minVariantPrice: price },
-    featuredImage: raw.featuredImage && typeof raw.featuredImage.url === 'string' ? raw.featuredImage : undefined,
+    featuredImage: raw.featuredImage && typeof raw.featuredImage.url === 'string' ? { url: raw.featuredImage.url, altText: raw.featuredImage.altText } : undefined,
     images: Array.isArray(raw.images?.nodes)
       ? raw.images.nodes.map(normalizeImage).filter((img: any) => Boolean(img.url))
       : [],
@@ -213,7 +213,7 @@ export async function getStaticProps({ params }: { params: { handle: string } })
     }
 
     const raw = await fetchProductByHandle(handle ?? '');
-    const product = normalizeProduct(raw);
+    const product = raw ? normalizeProduct(raw) : null;
 
     if (!product) {
       return { props: { product: null }, revalidate: 60 };
