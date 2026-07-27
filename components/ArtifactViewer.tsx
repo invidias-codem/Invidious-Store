@@ -50,8 +50,8 @@ export function ArtifactViewer({ glbSrc, usdzSrc, posterSrc, altText = '3D Artif
     };
   }, []);
 
-  const show3D = Boolean(glbSrc) && !meshError && isViewerDefined;
-  const showFallback = !Boolean(glbSrc) || meshError || !isViewerDefined;
+  const show3D = (Boolean(glbSrc) || Boolean(usdzSrc)) && !meshError && isViewerDefined;
+  const showFallback = !(Boolean(glbSrc) || Boolean(usdzSrc)) || meshError || !isViewerDefined;
 
   return (
     <div className="relative w-full h-full min-h-[500px] bg-zinc-900 border border-zinc-800">
@@ -81,7 +81,7 @@ export function ArtifactViewer({ glbSrc, usdzSrc, posterSrc, altText = '3D Artif
       {show3D ? (
         <model-viewer
           ref={viewerRef}
-          src={glbSrc as string}
+          src={(glbSrc || usdzSrc || '') as string}
           ios-src={usdzSrc}
           alt={altText}
           camera-controls
