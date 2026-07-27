@@ -45,7 +45,7 @@ export const PRODUCTS_QUERY = `#graphql
           nodes {
             id
             title
-            available
+            availableForSale
             price {
               amount
               currencyCode
@@ -55,12 +55,6 @@ export const PRODUCTS_QUERY = `#graphql
               value
             }
             sku
-          }
-        }
-        metafields(first: 20, namespace: "custom") {
-          nodes {
-            key
-            value
           }
         }
       }
@@ -95,7 +89,7 @@ export const PRODUCT_BY_HANDLE_QUERY = `#graphql
         nodes {
           id
           title
-          available
+          availableForSale
           price {
             amount
             currencyCode
@@ -105,12 +99,6 @@ export const PRODUCT_BY_HANDLE_QUERY = `#graphql
             value
           }
           sku
-        }
-      }
-      metafields(first: 20, namespace: "custom") {
-        nodes {
-          key
-          value
         }
       }
     }
@@ -129,13 +117,12 @@ export type ShopifyProduct = {
     nodes: {
       id: string;
       title: string;
-      available: boolean;
+      availableForSale: boolean;
       price: { amount: string; currencyCode: string };
       selectedOptions: { name: string; value: string }[];
       sku?: string;
     }[];
   };
-  metafields?: { nodes: { key: string; value: string }[] };
 };
 
 export async function fetchProducts(first = 24): Promise<ShopifyProduct[]> {

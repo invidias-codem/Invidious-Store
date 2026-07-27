@@ -84,11 +84,11 @@ function ProductDetail({ product }: { product: Product }) {
                       <button
                         key={variant.id}
                         type="button"
-                        disabled={!variant.available}
+                        disabled={!variant.availableForSale}
                         onClick={() => setSelectedVariantId(variant.id)}
                         className={`border px-3 py-2 text-[11px] font-mono uppercase tracking-widest transition-colors ${
                           selected ? 'border-white text-white' : 'border-zinc-700 text-gray-300 hover:border-gray-400'
-                        } ${!variant.available ? 'opacity-40 cursor-not-allowed line-through' : ''}`}
+                        } ${!variant.availableForSale ? 'opacity-40 cursor-not-allowed line-through' : ''}`}
                       >
                         {color ? `${size} · ${color}` : size}
                       </button>
@@ -100,10 +100,10 @@ function ProductDetail({ product }: { product: Product }) {
 
             <div className="flex items-center gap-3">
               <GothicButton
-                label={selectedVariant?.available !== false ? 'Add to cart' : 'Sold out'}
+                label={selectedVariant?.availableForSale !== false ? 'Add to cart' : 'Sold out'}
                 onClick={() =>
                   selectedVariant &&
-                  selectedVariant.available !== false &&
+                  selectedVariant.availableForSale !== false &&
                   addItem({
                     id: selectedVariant.id,
                     title: `${product.title} - ${selectedVariant.title}`,
@@ -112,7 +112,7 @@ function ProductDetail({ product }: { product: Product }) {
                     variantId: selectedVariant.id,
                   })
                 }
-                disabled={selectedVariant?.available === false}
+                disabled={selectedVariant?.availableForSale === false}
               />
               <button
                 type="button"
