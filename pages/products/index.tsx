@@ -24,8 +24,8 @@ export default function ProductsPage({ products }: ProductsPageProps) {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <p className="text-[10px] tracking-[0.3em] uppercase text-gray-500">Archive</p>
-            <h1 className="font-display text-3xl tracking-tight sm:text-4xl">All Drops</h1>
+            <p className="font-gothic-ui text-[11px] tracking-[0.18em] uppercase text-gray-500">Archive</p>
+            <h1 className="font-gothic-ui text-3xl tracking-[0.18em] sm:text-4xl">All Drops</h1>
           </div>
           <p className="text-sm text-gray-500">Static archive refreshed every 60 seconds.</p>
         </div>

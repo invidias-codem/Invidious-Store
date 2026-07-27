@@ -36,27 +36,52 @@ export function GothicButton({
   href,
   onClick,
   type = 'button',
+  disabled,
 }: GothicButtonProps) {
   const palette = GOTHIC_COLORS[color] || GOTHIC_COLORS.iron;
-  const base = 'font-gothic-ui tracking-[0.18em] uppercase border inline-flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-white transition-colors';
+
+  const base =
+    'font-gothic-ui tracking-[0.18em] uppercase border inline-flex items-center justify-center focus:outline-none focus:ring-1 focus:ring-white transition-colors select-none';
   const sizes = { sm: 'px-4 py-2 text-[12px]', md: 'px-5 py-2.5 text-[13px]', lg: 'px-7 py-3 text-sm' };
 
-  const filled = `bg-[${palette.bg}] text-[${palette.text}] border-[${palette.border}] hover:bg-[${palette.hoverBg}] hover:text-[${palette.hoverText}]`;
-  const ghost = `bg-transparent text-[${palette.text}] border-[${palette.border}] hover:bg-[${palette.border}] hover:text-[${palette.text}]`;
+  const filledStyle: React.CSSProperties = {
+    backgroundColor: palette.bg,
+    color: palette.text,
+    borderColor: palette.border,
+  };
+  const ghostStyle: React.CSSProperties = {
+    backgroundColor: 'transparent',
+    color: palette.text,
+    borderColor: palette.border,
+  };
 
-  const className = cn(base, sizes[size], variant === 'filled' ? filled : ghost);
+  const hoverFill: React.CSSProperties = {
+    backgroundColor: palette.hoverBg,
+    color: palette.hoverText,
+  };
+  const hoverGhost: React.CSSProperties = {
+    backgroundColor: palette.border,
+    color: palette.text,
+  };
+
+  const style =
+    variant === 'filled' ? (disabled ? filledStyle : { ...filledStyle, ':hover': hoverFill } as any) : (disabled ? ghostStyle : { ...ghostStyle, ':hover': hoverGhost } as any);
+
+  const className = cn(base, sizes[size], disabled ? 'opacity-40 cursor-not-allowed' : '');
+
+  const content = <span>{label}</span>;
 
   if (href) {
     return (
-      <Link href={href} className={className}>
-        {label}
+      <Link href={href} className={className} style={style as any}>
+        {content}
       </Link>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} className={className}>
-      {label}
+    <button type={type} onClick={onClick} disabled={disabled} className={className} style={style as any}>
+      {content}
     </button>
   );
 }

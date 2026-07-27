@@ -61,7 +61,7 @@ function ProductDetail({ product }: { product: Product }) {
 
         <div className="lg:col-span-5 space-y-8">
           <div className="border-b border-zinc-800 pb-6 space-y-2">
-            <h1 className="text-2xl font-bold uppercase tracking-widest text-white">{product.title}</h1>
+            <h1 className="font-gothic-ui text-2xl text-white uppercase tracking-[0.18em]">{product.title}</h1>
             <p className="font-mono text-sm text-gray-400">
               ${price.amount} {price.currencyCode}
             </p>
@@ -74,7 +74,7 @@ function ProductDetail({ product }: { product: Product }) {
           <div className="space-y-3">
             {variants.length > 0 && (
               <div className="space-y-2">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-gray-500">Select</p>
+                <p className="font-gothic-ui text-[11px] uppercase tracking-[0.18em] text-gray-500">Select</p>
                 <div className="flex flex-wrap gap-2">
                   {variants.map((variant) => {
                     const size = sizeFromTitle(variant.title);
@@ -117,7 +117,7 @@ function ProductDetail({ product }: { product: Product }) {
               <button
                 type="button"
                 onClick={() => setShowSizeGuide((v) => !v)}
-                className="text-[10px] font-mono uppercase tracking-widest text-gray-500 hover:text-white underline underline-offset-4"
+                className="font-gothic-ui text-[11px] uppercase tracking-[0.18em] text-gray-500 hover:text-white underline underline-offset-4"
               >
                 {showSizeGuide ? 'Hide Size Guide' : 'True to Size'}
               </button>

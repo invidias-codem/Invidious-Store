@@ -31,7 +31,7 @@ export default function Manifesto() {
 
         <article className="space-y-12 font-mono text-sm leading-relaxed text-gray-400 max-w-3xl mx-auto">
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest">I. The Genesis of Cognitive Harvesting</h2>
+            <h2 className="font-gothic-ui text-lg text-white uppercase tracking-[0.18em]">I. The Genesis of Cognitive Harvesting</h2>
             <p>
               We grew up in the digital panopticon, watching other lives unfold in hyper-saturated pixels. What began as admiration for the lifestyles represented on our screens evolved into a deeper understanding of the modern human condition: we were not just consumers; we were the crop. Our attention was harvested to feed a global machine designed to cultivate constant, quiet envy.
             </p>
@@ -40,7 +40,7 @@ export default function Manifesto() {
           <div className="w-full h-px bg-zinc-800 my-12" />
 
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest">II. Weight, Hardware, and Permanence</h2>
+            <h2 className="font-gothic-ui text-lg text-white uppercase tracking-[0.18em]">II. Weight, Hardware, and Permanence</h2>
             <p>
               In a world consumed by ephemeral digital noise, we build physical artifacts engineered to endure. We measure value in weight, grain, and density:
             </p>
@@ -57,7 +57,7 @@ export default function Manifesto() {
           <div className="w-full h-px bg-zinc-800 my-12" />
 
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest">III. Architecture of Desire</h2>
+            <h2 className="font-gothic-ui text-lg text-white uppercase tracking-[0.18em]">III. Architecture of Desire</h2>
             <p>
               <span className="italic text-gray-300">Invidious</span>—born from the human psychological drive toward the rare, the sacred, and the unattainable. We do not ask for attention through loud logos or artificial hype; we demand it through uncompromising structural integrity and subcultural authenticity. We build for the discerning few who view their wardrobe as cultural armor.
             </p>
@@ -66,7 +66,7 @@ export default function Manifesto() {
           <div className="w-full h-px bg-zinc-800 my-12" />
 
           <section className="space-y-6">
-            <h2 className="text-lg font-bold text-white uppercase tracking-widest">IV. Open Code, Closed Scarcity</h2>
+            <h2 className="font-gothic-ui text-lg text-white uppercase tracking-[0.18em]">IV. Open Code, Closed Scarcity</h2>
             <p>
               Our methodology is open source; our physical drops are uncompromisingly scarce. We share the blueprint, the code, and the intellectual process behind our creation, while strictly limiting the physical yield. Once a prototype phase closes, it returns to the archive.
             </p>

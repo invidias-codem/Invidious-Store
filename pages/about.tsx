@@ -47,7 +47,7 @@ export default function About() {
 
           <article className="lg:col-span-7 space-y-10 font-mono text-sm leading-relaxed text-gray-400">
             <section className="space-y-4">
-              <h2 className="text-base font-bold text-white uppercase tracking-widest">Decoding the Panopticon</h2>
+              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">Decoding the Panopticon</h2>
               <p>
                 Growing up in the digital era, I spent years watching other people&rsquo;s lives unfold on my screen. Naturally, I developed a quiet admiration for the curated lifestyles they projected. But as that admiration deepened, it evolved into a sobering realization about the modern human condition: my attention was being harvested. I realized that the very machinery of modern social algorithms is engineered to cultivate constant, quiet envy—turning our natural curiosity into a product and using us to harvest attention for others.
               </p>
@@ -59,7 +59,7 @@ export default function About() {
             <div className="w-full h-px bg-zinc-800" />
 
             <section className="space-y-4">
-              <h2 className="text-base font-bold text-white uppercase tracking-widest">My Essence: Craft &amp; Code</h2>
+              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">My Essence: Craft &amp; Code</h2>
               <p>
                 My personal aesthetic is the living blueprint for everything I design for Invidious. When you look at me, you see the exact tension that drives my brand:
               </p>
@@ -88,7 +88,7 @@ export default function About() {
             <div className="w-full h-px bg-zinc-800" />
 
             <section className="space-y-4">
-              <h2 className="text-base font-bold text-white uppercase tracking-widest">Modern Autonomy</h2>
+              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">Modern Autonomy</h2>
               <p>
                 I do not believe in traditional fashion pipelines, mass-market templates, or outsourcing my vision to creative agencies.
               </p>
