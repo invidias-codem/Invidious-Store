@@ -16,10 +16,15 @@ export const StorefrontAmbientAudio: React.FC = () => {
   const [enabled, setEnabled] = useState(false);
   const [muted, setMuted] = useState(true);
   const [playerReady, setPlayerReady] = useState(false);
+  const [debugOpen, setDebugOpen] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState<number | null>(null);
+  const [playerState, setPlayerState] = useState<number | null>(null);
   const playerRef = React.useRef<any | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const enabledRef = React.useRef(enabled);
   const mutedRef = React.useRef(muted);
+  const timeIntervalRef = React.useRef<number | null>(null);
 
   useEffect(() => {
     enabledRef.current = enabled;
@@ -92,23 +97,34 @@ export const StorefrontAmbientAudio: React.FC = () => {
               startSeconds: START_SECONDS,
             });
             playerRef.current = event.target;
+
+            if (timeIntervalRef.current) clearInterval(timeIntervalRef.current);
+            timeIntervalRef.current = window.setInterval(() => {
+              try {
+                const t = event.target.getCurrentTime();
+                setCurrentTime(typeof t === 'number' ? t : null);
+              } catch {}
+            }, 500);
           } catch (e) {
             console.error('[AMBIENT_AUDIO_READY_ERROR]', e);
+            setLastError('ready:' + String(e));
           }
         },
         onStateChange: (event: any) => {
           try {
+            setPlayerState(event?.data ?? null);
             if (event?.data === 0) {
-              // YT.PlayerState.ENDED - enforce start time on loop
               event.target.seekTo(START_SECONDS);
               event.target.playVideo();
             }
           } catch (e) {
             console.error('[AMBIENT_AUDIO_LOOP_ERROR]', e);
+            setLastError('loop:' + String(e));
           }
         },
         onError: (event: any) => {
           console.error('[AMBIENT_AUDIO_ERROR] code=', event?.data);
+          setLastError('yt:' + String(event?.data ?? 'unknown'));
         },
       },
     });
@@ -117,17 +133,20 @@ export const StorefrontAmbientAudio: React.FC = () => {
       if (player && typeof player.destroy === 'function') {
         try { player.destroy(); } catch {}
       }
+      if (timeIntervalRef.current) clearInterval(timeIntervalRef.current);
       playerRef.current = null;
+      setCurrentTime(null);
+      setPlayerState(null);
     };
   }, [enabled, playerReady]);
 
   const enable = useCallback(() => {
     setEnabled(true);
+    setLastError(null);
     try {
       window.sessionStorage.setItem('storefront-ambient-audio', '1');
     } catch {}
 
-    // Synchronous trusted-user-gesture playback path
     setTimeout(() => {
       try {
         const player = playerRef.current;
@@ -144,6 +163,7 @@ export const StorefrontAmbientAudio: React.FC = () => {
         });
       } catch (e) {
         console.error('[AMBIENT_AUDIO_ENABLE_ERROR]', e);
+        setLastError('enable:' + String(e));
       }
     }, 0);
   }, []);
@@ -154,32 +174,23 @@ export const StorefrontAmbientAudio: React.FC = () => {
       mutedRef.current = next;
       try {
         const player = playerRef.current;
-        if (!player || typeof player[muted ? 'unMute' : 'mute'] !== 'function') return next;
+        if (!player) return next;
+
         if (next) {
-          player.mute();
+          if (typeof player.mute === 'function') player.mute();
         } else {
-          player.unMute();
+          if (typeof player.unMute === 'function') player.unMute();
+          if (typeof player.playVideo === 'function') player.playVideo();
         }
       } catch (e) {
         console.error('[AMBIENT_AUDIO_MUTE_ERROR]', e);
+        setLastError('mute:' + String(e));
       }
       return next;
     });
   }, []);
 
-  if (!enabled) {
-    return (
-      <div className="fixed bottom-4 right-4 z-40">
-        <button
-          type="button"
-          onClick={enable}
-          className="rounded-xl border border-invidious-border bg-[#0a0a0a]/85 px-3 py-2 text-[11px] tracking-[0.18em] uppercase text-gray-300 backdrop-blur hover:border-gray-500 hover:text-white"
-        >
-          Play ambient beat
-        </button>
-      </div>
-    );
-  }
+  const stateLabel = playerState === null ? 'idle' : playerState === -1 ? 'unstarted' : playerState === 0 ? 'ended' : playerState === 1 ? 'playing' : playerState === 2 ? 'paused' : playerState === 3 ? 'buffering' : playerState === 5 ? 'cued' : 'state:' + playerState;
 
   return (
     <div className="fixed bottom-4 right-4 z-40">
@@ -195,7 +206,30 @@ export const StorefrontAmbientAudio: React.FC = () => {
         >
           {muted ? 'Unmute' : 'Mute'}
         </button>
+        <button
+          type="button"
+          onClick={() => setDebugOpen((v) => !v)}
+          className="rounded-lg border border-invidious-border px-2 py-1 text-[11px] tracking-widest uppercase text-gray-300 hover:border-gray-500 hover:text-white"
+        >
+          {debugOpen ? 'Hide debug' : 'Debug'}
+        </button>
       </div>
+      {debugOpen && (
+        <div className="mt-2 w-72 rounded-xl border border-invidious-border bg-[#0a0a0a]/90 p-3 text-[11px] text-gray-300 backdrop-blur">
+          <div className="flex items-center justify-between">
+            <span className="uppercase tracking-widest text-gray-400">Ambient debug</span>
+            <span className="text-gray-500">YT {YOUTUBE_VIDEO_ID}</span>
+          </div>
+          <div className="mt-2 space-y-1">
+            <div>ready: {playerReady ? 'yes' : 'no'}</div>
+            <div>state: {stateLabel}</div>
+            <div>time: {currentTime !== null ? currentTime.toFixed(1) + 's' : '—'}</div>
+            <div>muted: {muted ? 'yes' : 'no'}</div>
+            <div>start: {START_SECONDS}s</div>
+            <div>error: {lastError || 'none'}</div>
+          </div>
+        </div>
+      )}
       <div
         ref={containerRef}
         className="storefront-ambient-container"
