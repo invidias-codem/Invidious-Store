@@ -18,6 +18,13 @@ export const StorefrontAmbientAudio: React.FC = () => {
   const [playerReady, setPlayerReady] = useState(false);
   const playerRef = React.useRef<any | null>(null);
   const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const enabledRef = React.useRef(enabled);
+  const mutedRef = React.useRef(muted);
+
+  useEffect(() => {
+    enabledRef.current = enabled;
+    mutedRef.current = muted;
+  }, [enabled, muted]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -75,7 +82,7 @@ export const StorefrontAmbientAudio: React.FC = () => {
       events: {
         onReady: (event: any) => {
           try {
-            if (muted) {
+            if (mutedRef.current) {
               event.target.mute();
             } else {
               event.target.unMute();
@@ -89,8 +96,19 @@ export const StorefrontAmbientAudio: React.FC = () => {
             console.error('[AMBIENT_AUDIO_READY_ERROR]', e);
           }
         },
+        onStateChange: (event: any) => {
+          try {
+            if (event?.data === 0) {
+              // YT.PlayerState.ENDED - enforce start time on loop
+              event.target.seekTo(START_SECONDS);
+              event.target.playVideo();
+            }
+          } catch (e) {
+            console.error('[AMBIENT_AUDIO_LOOP_ERROR]', e);
+          }
+        },
         onError: (event: any) => {
-          console.error('[AMBIENT_AUDIO_ERROR]', event?.data);
+          console.error('[AMBIENT_AUDIO_ERROR] code=', event?.data);
         },
       },
     });
@@ -101,13 +119,52 @@ export const StorefrontAmbientAudio: React.FC = () => {
       }
       playerRef.current = null;
     };
-  }, [enabled, playerReady, muted]);
+  }, [enabled, playerReady]);
 
   const enable = useCallback(() => {
     setEnabled(true);
     try {
       window.sessionStorage.setItem('storefront-ambient-audio', '1');
     } catch {}
+
+    // Synchronous trusted-user-gesture playback path
+    setTimeout(() => {
+      try {
+        const player = playerRef.current;
+        if (!player || typeof player.playVideo !== 'function') return;
+
+        if (mutedRef.current) {
+          player.mute();
+        } else {
+          player.unMute();
+        }
+        player.loadVideoById({
+          videoId: YOUTUBE_VIDEO_ID,
+          startSeconds: START_SECONDS,
+        });
+      } catch (e) {
+        console.error('[AMBIENT_AUDIO_ENABLE_ERROR]', e);
+      }
+    }, 0);
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    setMuted((m) => {
+      const next = !m;
+      mutedRef.current = next;
+      try {
+        const player = playerRef.current;
+        if (!player || typeof player[muted ? 'unMute' : 'mute'] !== 'function') return next;
+        if (next) {
+          player.mute();
+        } else {
+          player.unMute();
+        }
+      } catch (e) {
+        console.error('[AMBIENT_AUDIO_MUTE_ERROR]', e);
+      }
+      return next;
+    });
   }, []);
 
   if (!enabled) {
@@ -133,7 +190,7 @@ export const StorefrontAmbientAudio: React.FC = () => {
         </div>
         <button
           type="button"
-          onClick={() => setMuted((m) => !m)}
+          onClick={toggleMute}
           className="rounded-lg border border-invidious-border px-2 py-1 text-[11px] tracking-widest uppercase text-gray-300 hover:border-gray-500 hover:text-white"
         >
           {muted ? 'Unmute' : 'Mute'}
