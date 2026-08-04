@@ -61,13 +61,14 @@ export const StorefrontAmbientAudio: React.FC = () => {
       />
       <style jsx global>{`
         .storefront-ambient-iframe {
-          height: 0;
-          width: 0;
           position: fixed;
-          pointer-events: none;
+          bottom: 0;
+          right: 0;
+          width: 1px;
+          height: 1px;
           opacity: 0;
-          left: -9999px;
-          top: -9999px;
+          pointer-events: none;
+          border: 0;
         }
       `}</style>
     </div>
