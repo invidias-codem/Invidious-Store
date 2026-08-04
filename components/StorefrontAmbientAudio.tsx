@@ -5,9 +5,19 @@ import React, { useState, useEffect, useCallback } from 'react';
 const YOUTUBE_VIDEO_ID = 's1Apr5OeyT4';
 const START_SECONDS = 15;
 
+declare global {
+  interface Window {
+    YT?: any;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
 export const StorefrontAmbientAudio: React.FC = () => {
   const [enabled, setEnabled] = useState(false);
   const [muted, setMuted] = useState(true);
+  const [playerReady, setPlayerReady] = useState(false);
+  const playerRef = React.useRef<any | null>(null);
+  const containerRef = React.useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -15,7 +25,68 @@ export const StorefrontAmbientAudio: React.FC = () => {
       const stored = window.sessionStorage.getItem('storefront-ambient-audio');
       if (stored === '1') setEnabled(true);
     } catch {}
+
+    const existing = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      existing?.();
+      setPlayerReady(true);
+    };
+
+    if (!window.YT && !document.querySelector('script[src*="youtube.com/iframe_api"]')) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      tag.async = true;
+      document.head.appendChild(tag);
+    } else if (window.YT) {
+      setPlayerReady(true);
+    }
+
+    return () => {
+      window.onYouTubeIframeAPIReady = existing || undefined;
+    };
   }, []);
+
+  useEffect(() => {
+    if (!enabled || !playerReady || !containerRef.current) return;
+
+    if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+      try { playerRef.current.destroy(); } catch {}
+      playerRef.current = null;
+    }
+
+    const player = new window.YT.Player(containerRef.current, {
+      height: '1',
+      width: '1',
+      videoId: YOUTUBE_VIDEO_ID,
+      playerVars: {
+        start: START_SECONDS,
+        loop: 1,
+        playlist: YOUTUBE_VIDEO_ID,
+        controls: 0,
+        modestbranding: 1,
+        rel: 0,
+        iv_load_policy: 3,
+        disablekb: 1,
+        fs: 0,
+        playsinline: 1,
+        mute: muted ? 1 : 0,
+        autoplay: 1,
+      },
+      events: {
+        onReady: (event: any) => {
+          try { event.target.playVideo(); } catch {}
+          playerRef.current = event.target;
+        },
+      },
+    });
+
+    return () => {
+      if (player && typeof player.destroy === 'function') {
+        try { player.destroy(); } catch {}
+      }
+      playerRef.current = null;
+    };
+  }, [enabled, playerReady, muted]);
 
   const enable = useCallback(() => {
     setEnabled(true);
@@ -53,14 +124,13 @@ export const StorefrontAmbientAudio: React.FC = () => {
           {muted ? 'Unmute' : 'Mute'}
         </button>
       </div>
-      <iframe
-        src={`https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&start=${START_SECONDS}&loop=1&playlist=${YOUTUBE_VIDEO_ID}&controls=0&modestbranding=1&showinfo=0&rel=0&iv_load_policy=3&disablekb=1&fs=0${muted ? '&mute=1' : ''}`}
-        allow="autoplay"
-        title="storefront ambient audio"
-        className="storefront-ambient-iframe"
+      <div
+        ref={containerRef}
+        className="storefront-ambient-container"
+        aria-hidden
       />
       <style jsx global>{`
-        .storefront-ambient-iframe {
+        .storefront-ambient-container {
           position: fixed;
           bottom: 0;
           right: 0;
@@ -68,7 +138,7 @@ export const StorefrontAmbientAudio: React.FC = () => {
           height: 1px;
           opacity: 0;
           pointer-events: none;
-          border: 0;
+          overflow: hidden;
         }
       `}</style>
     </div>
