@@ -5,6 +5,7 @@ import Link from 'next/link';
 
 import { CartProvider } from '@/components/CartProvider';
 import { CartIsland } from '@/components/CartIsland';
+import { StorefrontAmbientAudio } from '@/components/StorefrontAmbientAudio';
 import { InvidiousLogo } from '@/components/UI';
 import { GothicButton } from '@/components/UI';
 
@@ -48,6 +49,7 @@ export default function App({ Component, pageProps }: AppProps) {
       </div>
 
       <CartIsland />
+      <StorefrontAmbientAudio />
     </CartProvider>
   );
 }

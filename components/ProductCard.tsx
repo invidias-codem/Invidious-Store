@@ -16,27 +16,42 @@ type Product = {
   inventory?: number;
 };
 
-export function ProductCard({ product }: { product: Product }) {
+type ProductCardProps = {
+  product: Product;
+  shopifyVariantId?: string | null;
+  forgeStatus?: 'MESH_PENDING' | 'FORGED';
+};
+
+export function ProductCard({ product, shopifyVariantId, forgeStatus }: ProductCardProps) {
   const { addItem } = useCart();
   const primaryImage = product.images?.[0]?.url ?? product.featuredImage?.url;
   const amount = product.priceRange.minVariantPrice.amount;
   const currency = product.priceRange.minVariantPrice.currencyCode;
-  
-  // Trigger scarcity UI if inventory drops below the threshold
+
   const isScarce = product.inventory !== undefined && product.inventory > 0 && product.inventory < 5;
 
   const handleAdd = () => {
+    if (!shopifyVariantId || typeof shopifyVariantId !== 'string' || !shopifyVariantId.startsWith('gid://shopify/')) {
+      return;
+    }
     addItem({
       id: product.id,
       title: product.title,
       price: parseFloat(amount),
       currency,
+      shopifyVariantId,
     });
   };
 
+  const isActive = !!shopifyVariantId;
+  const label = !forgeStatus || forgeStatus === 'MESH_PENDING'
+    ? '[ MESH PENDING ]'
+    : !isActive
+      ? '[ AWAITING LINK ]'
+      : '[ ADD TO CART ]';
+
   return (
     <div className="group relative border border-invidious-border bg-invidious-bg flex flex-col h-full">
-      {/* Scarcity Indicator */}
       {isScarce && (
         <div className="absolute top-4 left-4 z-20 bg-black border border-gray-500 px-2 py-1 pointer-events-none shadow-lg">
           <span className="text-[10px] uppercase tracking-widest text-gray-300 font-mono">
@@ -45,15 +60,12 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       )}
 
-      {/* Image Link Area */}
       <Link href={`/products/${product.handle}`} className="block overflow-hidden relative aspect-[4/5] bg-zinc-900">
-        
-        {/* Subtle Industrial Grid Overlay */}
         <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 opacity-20 pointer-events-none z-10">
-          <div className="border-r border-b border-gray-500"></div>
-          <div className="border-b border-gray-500"></div>
-          <div className="border-r border-gray-500"></div>
-          <div></div>
+          <div className="border-r border-b border-gray-500" />
+          <div className="border-b border-gray-500" />
+          <div className="border-r border-gray-500" />
+          <div />
         </div>
 
         {primaryImage ? (
@@ -71,25 +83,21 @@ export function ProductCard({ product }: { product: Product }) {
         )}
       </Link>
 
-      {/* Content & Action Area */}
       <div className="p-4 flex flex-col flex-grow justify-between gap-4">
-        {/* Title & Description Link */}
-        <Link href={`/products/${product.handle}`} className="block group/text">
-          <h3 className="text-sm font-semibold tracking-wide uppercase group-hover/text:text-gray-400 transition-colors">
-            {product.title}
-          </h3>
-          <p className="mt-2 text-xs text-gray-500 line-clamp-2 font-mono uppercase tracking-wider">
-            {product.description}
-          </p>
-        </Link>
-        
-        {/* Bottom Action Bar */}
-        <div className="flex items-center justify-between pt-4 border-t border-zinc-800 mt-auto">
-          <span className="text-sm font-mono text-gray-300 tracking-widest">
-            {currency} {amount}
-          </span>
-          {/* Button is now safely separated from the routing links */}
-          <GothicButton size="sm" label="Secure" onClick={handleAdd} />
+        <div>
+          <Link href={`/products/${product.handle}`} className="block group/text">
+            <h3 className="text-sm font-semibold tracking-wide uppercase group-hover/text:text-gray-400 transition-colors">
+              {product.title}
+            </h3>
+            <p className="mt-2 text-xs text-gray-500 line-clamp-2 font-mono uppercase tracking-wider">
+              {product.description}
+            </p>
+          </Link>
+        </div>
+
+        <div className="flex items-center justify-between pt-4 border-t border-zinc-800 mt-auto gap-2">
+          <span className="text-sm font-mono text-gray-300 tracking-widest">{currency} {amount}</span>
+          <GothicButton size="sm" onClick={handleAdd} disabled={!isActive} label={label} />
         </div>
       </div>
     </div>

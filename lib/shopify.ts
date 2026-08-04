@@ -167,3 +167,68 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
     return null;
   }
 }
+
+export type ShopifyCheckoutInput = {
+  merchandiseId: string;
+  quantity?: number;
+};
+
+export type ShopifyCheckoutResult = {
+  checkoutUrl: string;
+};
+
+export type ShopifyCheckoutError = {
+  message?: string;
+  userErrors?: Array<{ message?: string }>;
+};
+
+export async function createCheckout(
+  items: ShopifyCheckoutInput[],
+  returnUrl?: string
+): Promise<ShopifyCheckoutResult> {
+  if (!items.length) {
+    throw new Error('Cart manifest is empty.');
+  }
+
+  const mutation = `#graphql
+    mutation checkoutCreate($input: CheckoutCreateInput!) {
+      checkoutCreate(input: $input) {
+        checkout {
+          id
+          webUrl
+        }
+        userErrors {
+          message
+        }
+      }
+    }
+  `;
+
+  const input: any = {
+    lineItems: items.map((item) => ({
+      variantId: item.merchandiseId,
+      quantity: item.quantity ?? 1,
+    })),
+  };
+
+  if (returnUrl) {
+    input.returnUrl = returnUrl;
+  }
+
+  const data = await client.request<{
+    checkoutCreate: {
+      checkout?: { id: string; webUrl: string };
+      userErrors: ShopifyCheckoutError['userErrors'];
+    };
+  }>(mutation, { input });
+
+  const checkout = data.checkoutCreate?.checkout;
+  const errors = data.checkoutCreate?.userErrors ?? [];
+
+  if (!checkout?.webUrl) {
+    const message = errors[0]?.message || 'Failed to initialize secure transaction.';
+    throw new Error(message);
+  }
+
+  return { checkoutUrl: checkout.webUrl };
+}

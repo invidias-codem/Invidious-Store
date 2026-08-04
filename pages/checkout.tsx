@@ -1,13 +1,77 @@
 import { useCart } from '@/components/CartProvider';
 import { GothicButton } from '@/components/UI';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export default function CheckoutPage() {
   const { items, updateQuantity, removeItem, totalPrice, clearCart } = useCart();
+  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [errors, setErrors] = useState<string[]>([]);
+
+  const handleCheckout = async () => {
+    if (isSubmitting || !items.length) return;
+    setIsSubmitting(true);
+    setError(null);
+    setErrors([]);
+
+    try {
+      const returnUrl = typeof window !== 'undefined' ? `${window.location.origin}/checkout/thank-you` : undefined;
+      const res = await fetch('/api/checkout/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          items: items.map((item) => ({
+            merchandiseId: item.variantId || item.id,
+            quantity: item.quantity,
+          })),
+          returnUrl,
+        }),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data?.error) {
+        const message = data?.error || data?.details || 'Failed to initialize secure transaction.';
+        setError(typeof message === 'string' ? message : JSON.stringify(message));
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (data?.errors && Array.isArray(data.errors) && data.errors.length) {
+        setErrors(data.errors.map((e: any) => e?.message || 'Checkout error'));
+        setIsSubmitting(false);
+        return;
+      }
+
+      const checkoutUrl = data?.checkoutUrl;
+      if (!checkoutUrl || typeof checkoutUrl !== 'string') {
+        setError('Missing checkout URL.');
+        setIsSubmitting(false);
+        return;
+      }
+
+      clearCart();
+      window.location.href = checkoutUrl;
+    } catch (err: any) {
+      setError(err?.message || 'Unexpected checkout failure.');
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
       <h1 className="font-display text-3xl sm:text-4xl">Checkout</h1>
-      <p className="mt-3 text-sm text-gray-500">Secure checkout is not active yet. Use this view to validate cart flow.</p>
+
+      {(error || errors.length > 0) && (
+        <div className="mt-6 space-y-2 rounded-2xl border border-red-500/20 bg-gradient-to-br from-background to-red-500/5 p-6">
+          {error && <p className="text-sm text-red-500">{error}</p>}
+          {errors.map((e, i) => (
+            <p key={i} className="text-sm text-red-500">{e}</p>
+          ))}
+        </div>
+      )}
 
       <div className="mt-8 space-y-3">
         {items.length === 0 && (
@@ -43,7 +107,11 @@ export default function CheckoutPage() {
             <span className="font-display text-lg">{totalPrice.toFixed(2)}</span>
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <GothicButton label="Place order" onClick={clearCart} />
+            <GothicButton
+              label={isSubmitting ? 'Redirecting…' : 'Place order'}
+              onClick={handleCheckout}
+              disabled={isSubmitting || items.length === 0}
+            />
             <GothicButton label="Return to archive" href="/products" variant="ghost" />
           </div>
         </div>

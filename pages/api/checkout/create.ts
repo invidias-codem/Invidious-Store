@@ -1,108 +1,51 @@
-import { NextResponse } from 'next/server';
-import { fetchProductByHandle } from '@/lib/shopify';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import { createCheckout } from '@/lib/shopify';
 
-export const runtime = 'edge';
-
-type CheckoutItem = {
-  id: string;
-  title: string;
-  price: number;
-  currency: string;
-  variantId?: string;
-};
-
-function buildLineItems(items: CheckoutItem[]) {
-  const uniqueVariants = new Map<string, CheckoutItem & { quantity: number }>();
-
-  for (const item of items) {
-    if (!item.variantId) continue;
-    const existing = uniqueVariants.get(item.variantId);
-    if (existing) {
-      existing.quantity += 1;
-      continue;
-    }
-    uniqueVariants.set(item.variantId, { ...item, quantity: 1 } as CheckoutItem & { quantity: number });
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  return Array.from(uniqueVariants.values()).map((item) => ({
-    variantId: item.variantId,
-    quantity: item.quantity || 1,
-  }));
-}
+  const sessionToken = req.cookies.invidious_vault_access;
+  if (!sessionToken) {
+    return res.status(401).json({ error: 'Unauthorized: Syndicate access required for transactions.' });
+  }
 
-export default async function handler(request: Request) {
   try {
-    const body = (await request.json().catch(() => ({ items: [] }))) as { items?: CheckoutItem[] };
-    const items = body.items ?? [];
+    const body = req.body as {
+      items?: Array<{ merchandiseId?: string; quantity?: number }>;
+      returnUrl?: string;
+    } | undefined;
 
-    if (!items.length) {
-      return NextResponse.json({ ok: false, error: 'Cart is empty.' }, { status: 400 });
+    const items = body?.items;
+    if (!Array.isArray(items) || !items.length) {
+      return res.status(400).json({ error: 'Cart manifest is empty.' });
     }
 
-    const lineItems = buildLineItems(items);
-    if (!lineItems.length) {
-      return NextResponse.json({ ok: false, error: 'No valid variants.' }, { status: 400 });
+    const cleaned = items
+      .filter((item) => typeof item.merchandiseId === 'string' && typeof item.quantity === 'number')
+      .map((item) => ({ merchandiseId: item.merchandiseId as string, quantity: item.quantity as number }));
+
+    if (!cleaned.length) {
+      return res.status(400).json({ error: 'Cart manifest is empty.' });
     }
 
-    const storeDomain = process.env.NEXT_PUBLIC_SHOPIFY_STORE_DOMAIN;
-    const storefrontToken = process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN;
+    const cart = await createCheckout(cleaned, body?.returnUrl);
+    return res.status(200).json({ checkoutUrl: cart.checkoutUrl });
+  } catch (error: any) {
+    const message = error?.message || 'Failed to initialize secure transaction.';
+    const normalized = message.toLowerCase();
+    let userErrors: string[] | undefined;
 
-    if (!storeDomain || !storefrontToken) {
-      return NextResponse.json({ ok: false, error: 'Storefront is not configured.' }, { status: 500 });
+    if (normalized.includes('out of stock') || normalized.includes('unavailable')) {
+      userErrors = ['One or more selected variants are out of stock.'];
+    } else if (normalized.includes('invalid')) {
+      userErrors = ['One or more variant IDs are invalid.'];
     }
 
-    const checkoutUrl = `https://${storeDomain}/api/2024-04/graphql.json`;
-
-    const checkoutMutation = `#graphql
-      mutation checkoutCreate($input: CheckoutCreateInput!) {
-        checkoutCreate(input: $input) {
-          checkout {
-            id
-            webUrl
-          }
-          userErrors {
-            field
-            message
-          }
-        }
-      }
-    `;
-
-    const response = await fetch(checkoutUrl, {
-      method: 'POST',
-      headers: {
-        'X-Shopify-Storefront-Access-Token': storefrontToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        query: checkoutMutation,
-        variables: {
-          input: {
-            lineItems,
-          },
-        },
-      }),
+    return res.status(400).json({
+      error: userErrors ? undefined : message,
+      errors: userErrors,
     });
-
-    const result = await response.json();
-
-    if (!response.ok || result.errors || result.data?.checkoutCreate?.userErrors?.length) {
-      return NextResponse.json(
-        { ok: false, error: 'Checkout creation failed.', details: result },
-        { status: 500 }
-      );
-    }
-
-    const webUrl = result.data?.checkoutCreate?.checkout?.webUrl;
-    if (!webUrl) {
-      return NextResponse.json({ ok: false, error: 'Missing checkout URL.' }, { status: 500 });
-    }
-
-    return NextResponse.json({ ok: true, webUrl });
-  } catch (error) {
-    return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : 'Unknown error' },
-      { status: 500 }
-    );
   }
 }
