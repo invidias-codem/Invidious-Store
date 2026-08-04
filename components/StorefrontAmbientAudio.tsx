@@ -74,8 +74,23 @@ export const StorefrontAmbientAudio: React.FC = () => {
       },
       events: {
         onReady: (event: any) => {
-          try { event.target.playVideo(); } catch {}
-          playerRef.current = event.target;
+          try {
+            if (muted) {
+              event.target.mute();
+            } else {
+              event.target.unMute();
+            }
+            event.target.loadVideoById({
+              videoId: YOUTUBE_VIDEO_ID,
+              startSeconds: START_SECONDS,
+            });
+            playerRef.current = event.target;
+          } catch (e) {
+            console.error('[AMBIENT_AUDIO_READY_ERROR]', e);
+          }
+        },
+        onError: (event: any) => {
+          console.error('[AMBIENT_AUDIO_ERROR]', event?.data);
         },
       },
     });
