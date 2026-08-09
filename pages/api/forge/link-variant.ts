@@ -1,5 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { setDevForged, getDevLedgerMemory, writeLedger } from '@/lib/forgeState';
+import { ShopifyAdminClient } from '@/lib/shopify-admin';
+
+const admin = new ShopifyAdminClient();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -20,6 +23,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'Missing artifactId or shopifyVariantId.' });
   }
 
+  if (!shopifyVariantId.startsWith('gid://shopify/')) {
+    return res.status(400).json({ error: 'Invalid Shopify variant ID format.' });
+  }
+
   try {
     const memory = getDevLedgerMemory();
     if (memory) {
@@ -32,20 +39,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       memory.ledgers.set(artifactId, { ...entry, shopifyVariantId });
       memory.forged.add(artifactId);
     } else {
-      const entry = (await writeLedger(artifactId, {
+      const entry = await writeLedger(artifactId, {
         votes: 0,
         votedSessionCount: 0,
         threshold: 25,
         status: 'MESH_PENDING',
-      })) as unknown as string | void | Promise<void>;
-      if (entry instanceof Promise) {
-        await entry;
-      }
+      });
+      await entry;
     }
 
     setDevForged(artifactId);
-    return res.status(200).json({ success: true });
-  } catch {
+
+    let metafieldsUpdated = false;
+    try {
+      const base = `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host || ''}`;
+      const origin = base.replace(/\/$/, '');
+      const glbSrc = `${origin}/3d/${artifactId}/artifact.glb`;
+      const usdzSrc = `${origin}/3d/${artifactId}/artifact.usdz`;
+
+      await admin.setVariantModelMetafields(shopifyVariantId, glbSrc, usdzSrc);
+      metafieldsUpdated = true;
+    } catch (adminError: any) {
+      console.error('[link-variant] metafield write failed:', adminError);
+    }
+
+    return res.status(200).json({ success: true, metafieldsUpdated });
+  } catch (error: any) {
+    console.error('[link-variant] handler failed:', error);
     return res.status(500).json({ error: 'Failed to link Shopify variant.' });
   }
 }

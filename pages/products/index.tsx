@@ -26,6 +26,9 @@ export default function ProductsPage({ products }: ProductsPageProps) {
           <div>
             <p className="font-gothic-ui text-[11px] tracking-[0.18em] uppercase text-gray-500">Archive</p>
             <h1 className="font-gothic-ui text-3xl tracking-[0.18em] sm:text-4xl">All Drops</h1>
+            <p className="mt-2 text-xs font-mono uppercase tracking-widest text-gray-500">
+              Transparent pricing for CA, CO, and WA — see final price at checkout.
+            </p>
           </div>
           <p className="text-sm text-gray-500">Static archive refreshed every 60 seconds.</p>
         </div>

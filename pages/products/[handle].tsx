@@ -1,8 +1,10 @@
 import { fetchProductByHandle } from '@/lib/shopify';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import FloatingArtifact from '@/components/FloatingArtifact';
 import PDPGallery from '@/components/PDPGallery';
 import { GothicButton } from '@/components/UI';
 import { useCart } from '@/components/CartProvider';
+import { VaultGateModal } from '@/components/VaultGateModal';
 
 type ProductVariant = {
   id: string;
@@ -69,6 +71,13 @@ function ProductDetail({ product }: { product: Product }) {
   const variants = product.variants ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id ?? '');
   const [showSizeGuide, setShowSizeGuide] = useState(false);
+  const [showVaultGate, setShowVaultGate] = useState(false);
+  const [vaultAction, setVaultAction] = useState<'add'>('add');
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setShowVaultGate(false);
+  }, [selectedVariantId]);
 
   const selectedVariant = variants.find((v) => v.id === selectedVariantId) ?? variants[0];
   const sizeFromTitle = (title?: string) => title?.split('/')[0]?.trim();
@@ -84,11 +93,35 @@ function ProductDetail({ product }: { product: Product }) {
 
   const price = selectedVariant?.price ?? product.priceRange.minVariantPrice;
 
+  const handleAddClick = () => {
+    if (!selectedVariant || selectedVariant.availableForSale === false) return;
+    setVaultAction('add');
+    setShowVaultGate(true);
+  };
+
+  const onVaultUnlocked = () => {
+    setShowVaultGate(false);
+    if (selectedVariant) {
+      addItem({
+        id: selectedVariant.id,
+        title: `${product.title} - ${selectedVariant.title}`,
+        price: parseFloat(selectedVariant.price.amount),
+        currency: selectedVariant.price.currencyCode,
+        variantId: selectedVariant.id,
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-gray-300 font-sans px-4 py-12 md:px-12">
       <div className="mx-auto max-w-7xl grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-7">
-          <PDPGallery images={images} title={product.title} />
+          <FloatingArtifact
+            glbSrc="/models/af1.glb"
+            images={images}
+            posterSrc={product.featuredImage?.url}
+            altText={product.title}
+          />
         </div>
 
         <div className="lg:col-span-5 space-y-8">
@@ -135,17 +168,7 @@ function ProductDetail({ product }: { product: Product }) {
             <div className="flex items-center gap-3">
               <GothicButton
                 label={selectedVariant?.availableForSale !== false ? 'Add to cart' : 'Sold out'}
-                onClick={() =>
-                  selectedVariant &&
-                  selectedVariant.availableForSale !== false &&
-                  addItem({
-                    id: selectedVariant.id,
-                    title: `${product.title} - ${selectedVariant.title}`,
-                    price: parseFloat(selectedVariant.price.amount),
-                    currency: selectedVariant.price.currencyCode,
-                    variantId: selectedVariant.id,
-                  })
-                }
+                onClick={handleAddClick}
                 disabled={selectedVariant?.availableForSale === false}
               />
               <button
@@ -156,6 +179,14 @@ function ProductDetail({ product }: { product: Product }) {
                 {showSizeGuide ? 'Hide Size Guide' : 'True to Size'}
               </button>
             </div>
+
+            {showVaultGate && (
+              <VaultGateModal
+                action={vaultAction}
+                onClose={() => setShowVaultGate(false)}
+                onUnlocked={onVaultUnlocked}
+              />
+            )}
 
             {showSizeGuide && sizeGuide && (
               <div className="border border-zinc-800 bg-zinc-900 p-4 space-y-2">
@@ -193,6 +224,16 @@ export default function ProductPage({ product, error }: ProductPageProps) {
       </div>
     );
   }
+  const productPrice = product.priceRange.minVariantPrice;
+  const description = [
+    product.description,
+    `Shop ${product.title} with transparent checkout pricing.`,
+    'Final price shown at checkout for California, Colorado, and Washington.',
+    `Price: ${productPrice.amount} ${productPrice.currencyCode}.`,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return <ProductDetail product={product} />;
 }
 

@@ -22,7 +22,7 @@ export default function About() {
             About the Artist // JJ
           </h1>
           <p className="mt-3 text-xs font-mono uppercase tracking-widest text-gray-500">
-            Decoding the panopticon
+            At the intersection of craft and code
           </p>
         </header>
 
@@ -47,59 +47,50 @@ export default function About() {
 
           <article className="lg:col-span-7 space-y-10 font-mono text-sm leading-relaxed text-gray-400">
             <section className="space-y-4">
-              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">Decoding the Panopticon</h2>
+              <h2 className="text-base font-bold text-white uppercase tracking-widest">At the Intersection of Craft and Code</h2>
               <p>
-                Growing up in the digital era, I spent years watching other people&rsquo;s lives unfold on my screen. Naturally, I developed a quiet admiration for the curated lifestyles they projected. But as that admiration deepened, it evolved into a sobering realization about the modern human condition: my attention was being harvested. I realized that the very machinery of modern social algorithms is engineered to cultivate constant, quiet envy—turning our natural curiosity into a product and using us to harvest attention for others.
+                Invidious was founded by JJ, a solo designer, developer, and creative director operating at the boundary where physical luxury craftsmanship meets digital technology.
               </p>
               <p>
-                I chose to call my brand <span className="text-white">Invidious</span>—the Latin root for the sin of Envy. For me, this &ldquo;sin&rdquo; is not a moral failing; it is a raw, creative catalyst. I treat Invidious as an ongoing experiment in modern creative autonomy. By stepping out from behind the screen and building this ecosystem, I am proving that a single, uncompromising vision can bridge raw physical materials and complex digital systems to define the next era of alternative luxury. I am transmuting the envy of the spectator into the armor of the creator.
+                Rather than relying on outsourced agencies, mass production templates, or traditional fashion pipelines, JJ engineered Invidious from the ground up—hand-crafting the physical prototypes, sculpting the sterling silver hardware, and writing every line of code behind the brand&rsquo;s digital flagship.
               </p>
             </section>
 
             <div className="w-full h-px bg-zinc-800" />
 
             <section className="space-y-4">
-              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">My Essence: Craft &amp; Code</h2>
+              <h2 className="text-base font-bold text-white uppercase tracking-widest">The Philosophy</h2>
               <p>
-                My personal aesthetic is the living blueprint for everything I design for Invidious. When you look at me, you see the exact tension that drives my brand:
+                Invidious was born from a desire to merge two distinct worlds:
               </p>
-              <ul className="list-disc pl-5 space-y-3 marker:text-gray-500">
+              <ol className="list-decimal pl-5 space-y-4 marker:text-gray-500">
                 <li>
-                  <span className="text-white">The Sharp Monochromatic Tailoring:</span>
+                  <span className="text-white">The Physical Permanence of Heavy Hardware:</span>
                   <span className="block mt-1">
-                    I align myself with stark, structured black tailoring—sharp suits, dark dress shirts, and textured ties that command a presence without begging for attention.
+                    Deeply inspired by gothic architecture, dark subcultures, and uncompromising physical quality, JJ designs garments and silver hardware built to last generations—utilizing custom .925 sterling silver castings, 14oz raw selvedge denim, and 450 GSM Japanese textiles.
                   </span>
                 </li>
                 <li>
-                  <span className="text-white">The Handcrafted Metal Core:</span>
+                  <span className="text-white">The Deconstructive Logic of Modern Technology:</span>
                   <span className="block mt-1">
-                    I anchor my look with the heavy, raw weight of subcultural metal, represented by the signature dangling silver gothic cross earring I wear in my left ear. This is the exact same commitment to heavy-gauge, solid .925 sterling silver hardware that I build into my jewelry and accessory drops.
+                    Influenced by modern design heuristics like the 3% rule, I treat fashion and software development as fluid, sampling-based mediums. Every piece begins as a familiar structural baseline that is systematically disrupted through raw seam details, bracketed typography, and precise metal interventions.
                   </span>
                 </li>
-                <li>
-                  <span className="text-white">The Industrial Backdrop:</span>
-                  <span className="block mt-1">
-                    The concrete-textured, gritty gray backdrop behind me represents the architectural, industrial baseline of the world I construct.
-                  </span>
-                </li>
-              </ul>
+              </ol>
             </section>
 
             <div className="w-full h-px bg-zinc-800" />
 
             <section className="space-y-4">
-              <h2 className="font-gothic-ui text-base text-white uppercase tracking-[0.18em]">Modern Autonomy</h2>
+              <h2 className="text-base font-bold text-white uppercase tracking-widest">Beyond the Clothing</h2>
               <p>
-                I do not believe in traditional fashion pipelines, mass-market templates, or outsourcing my vision to creative agencies.
+                As a solo creator in the age of intelligent tools, it's paramount to utilize advanced workflows—combining, like custom 3D parametric modeling in Blender, machine learning trend forecasting, and custom React/Next.js codebases written directly inside VS Code—to build a modern, high-speed luxury ecosystem.
               </p>
               <p>
-                I engineered Invidious from the ground up by myself. I sculpt our custom sterling silver jewelry molds in Blender, source our premium 14oz Japanese raw selvedge denim and 450 GSM heavyweight cotton, and write every single line of code behind our headless Next.js storefront inside VS Code. By leveraging advanced AI workflows to accelerate my engineering, I am establishing a new model of creative independence.
-              </p>
-              <p className="text-white font-bold tracking-wider uppercase">
-                They harvested our attention to make us envious. I harvested their systems to make us free.
+                Invidious is latin for the sin Envy. I chose envy because in the digital era of social media, growing up watching others lives unfold, naturally I grew admiration for the lifestyles they represented. Then that admirating evolved into a deeper understanding of the human condition, and I found out I was being used to harvest attention towards other creating envious tendencies towards myself I treat sin as an ongoing experiment in modern creative autonomy: proving that a single vision, executed across both physical materials and digital systems, can define the next era of alternative luxury.
               </p>
               <blockquote className="border-l-2 border-gray-500 pl-4 italic text-gray-300">
-                &ldquo;I don&rsquo;t build for mass consumption. I build permanent artifacts for those who view what they wear—and the code behind how it was made—as a declaration of personal sovereignty.&rdquo;
+                &ldquo;We do not build for mass consumption. We build permanent artifacts for those who view what they wear—and how it was made—as an extension of their personal identity.&rdquo;
                 <span className="mt-2 block text-xs not-italic text-gray-500">— JJ</span>
               </blockquote>
             </section>

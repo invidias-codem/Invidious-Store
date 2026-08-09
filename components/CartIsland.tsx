@@ -1,10 +1,38 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useCart } from './CartProvider';
 import { GothicButton } from '@/components/UI';
+import { VaultGateModal } from '@/components/VaultGateModal';
 
 export function CartIsland() {
   const { items, isOpen, setIsOpen, updateQuantity, removeItem, clearCart, totalItems, totalPrice } = useCart();
+  const [showVaultGate, setShowVaultGate] = useState(false);
+  const [vaultGateAction, setVaultGateAction] = useState<'checkout' | 'add'>('checkout');
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    setHasAccess(document.cookie.includes('invidious_vault_access='));
+  }, []);
+
+  const handleCheckoutClick = () => {
+    if (!hasAccess) {
+      setVaultGateAction('checkout');
+      setShowVaultGate(true);
+      return;
+    }
+    window.location.href = '/checkout';
+  };
+
+  const handleAddToCart = () => {
+    if (!hasAccess) {
+      setVaultGateAction('add');
+      setShowVaultGate(true);
+      return;
+    }
+    setIsOpen(true);
+  };
 
   return (
     <>
@@ -56,13 +84,28 @@ export function CartIsland() {
                   <span className="font-display">{totalPrice.toFixed(2)}</span>
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <GothicButton label="Checkout" href="/checkout" />
+                  <GothicButton label="Checkout" onClick={handleCheckoutClick} />
                   <GothicButton variant="ghost" label="Clear" onClick={clearCart} />
                 </div>
               </div>
             )}
           </div>
         </div>
+      )}
+
+      {showVaultGate && (
+        <VaultGateModal
+          action={vaultGateAction}
+          onClose={() => setShowVaultGate(false)}
+          onUnlocked={() => {
+            setHasAccess(true);
+            setShowVaultGate(false);
+            if (vaultGateAction === 'checkout') {
+              window.location.href = '/checkout';
+            }
+            setIsOpen(true);
+          }}
+        />
       )}
     </>
   );

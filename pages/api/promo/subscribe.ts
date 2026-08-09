@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
-export async function POST(request: Request) {
+export default async function POST(request: Request) {
   try {
     const body = (await request.json().catch(() => ({}))) as { email?: string; phone?: string; source?: string };
     const email = body.email?.trim();

@@ -12,6 +12,9 @@ export default function Home() {
             Engineered for longevity, offline ownership, and controlled distribution.
             Clothing first. Retro sovereignty as side channel.
           </p>
+          <p className="mt-3 text-xs font-mono uppercase tracking-widest text-gray-500">
+            Transparent pricing for California, Colorado, and Washington — no hidden checkout tax surprises.
+          </p>
         </div>
 
         <div className="w-full flex justify-center">

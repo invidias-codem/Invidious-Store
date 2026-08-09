@@ -103,11 +103,40 @@ export const PRODUCT_BY_HANDLE_QUERY = `#graphql
             value
           }
           sku
+          metafields(identifiers: [
+            { namespace: "custom", key: "size_guide" }
+            { namespace: "custom", key: "glbSrc" }
+            { namespace: "custom", key: "usdzSrc" }
+          ]) {
+            key
+            value
+            type
+          }
         }
       }
-      metafields(identifiers: [{namespace: "custom", key: "size_guide"}]) {
+      metafields(identifiers: [{ namespace: "custom", key: "size_guide" }]) {
         key
         value
+      }
+    }
+  }
+`;
+
+export const PRODUCT_RECOMMENDATIONS_QUERY = `#graphql
+  query ProductRecommendations($productId: ID!, $first: Int!) {
+    productRecommendations(productId: $productId, first: $first) {
+      id
+      handle
+      title
+      featuredImage {
+        url
+        altText
+      }
+      priceRange {
+        minVariantPrice {
+          amount
+          currencyCode
+        }
       }
     }
   }
@@ -129,9 +158,17 @@ export type ShopifyProduct = {
       price: { amount: string; currencyCode: string };
       selectedOptions: { name: string; value: string }[];
       sku?: string;
+      metafields?: { key: string; value: string; type: string }[];
     }[];
   };
   metafields?: { key: string; value: string }[];
+  productRecommendations?: Array<{
+    id: string;
+    handle: string;
+    title: string;
+    featuredImage?: { url: string; altText?: string };
+    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+  }>;
 };
 
 export async function fetchProducts(first = 24): Promise<ShopifyProduct[]> {
@@ -165,6 +202,22 @@ export async function fetchProductByHandle(handle: string): Promise<ShopifyProdu
     return data.productByHandle ?? null;
   } catch {
     return null;
+  }
+}
+
+export async function fetchProductRecommendations(productId: string, first = 4): Promise<ShopifyProduct['productRecommendations']> {
+  if (!productId || !process.env.NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN) {
+    return [];
+  }
+
+  try {
+    const data = await client.request<{ productRecommendations: ShopifyProduct['productRecommendations'] }>(
+      PRODUCT_RECOMMENDATIONS_QUERY,
+      { productId, first }
+    );
+    return data.productRecommendations ?? [];
+  } catch {
+    return [];
   }
 }
 
