@@ -118,6 +118,21 @@ export const PRODUCT_BY_HANDLE_QUERY = `#graphql
         key
         value
       }
+      productRecommendations(first: 4) {
+        id
+        handle
+        title
+        featuredImage {
+          url
+          altText
+        }
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+      }
     }
   }
 `;

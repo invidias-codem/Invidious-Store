@@ -13,6 +13,7 @@ type ProductVariant = {
   price: { amount: string; currencyCode: string };
   selectedOptions?: { name: string; value: string }[];
   sku?: string;
+  metafields?: { key: string; value: string; type: string }[];
 };
 
 type Product = {
@@ -24,6 +25,13 @@ type Product = {
   images?: { url: string; altText?: string }[];
   variants?: ProductVariant[];
   metafields?: { key: string; value: string }[];
+  productRecommendations?: Array<{
+    id: string;
+    handle: string;
+    title: string;
+    featuredImage?: { url: string; altText?: string };
+    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+  }>;
 };
 
 interface RawProduct {
@@ -35,6 +43,13 @@ interface RawProduct {
   images?: { nodes?: { url?: string; altText?: string }[] };
   variants?: { nodes?: ProductVariant[] };
   metafields?: { key: string; value: string }[];
+  productRecommendations?: Array<{
+    id: string;
+    handle: string;
+    title: string;
+    featuredImage?: { url: string; altText?: string };
+    priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
+  }>;
 }
 
 function normalizeProduct(raw: RawProduct): Product | null {
@@ -62,13 +77,21 @@ function normalizeProduct(raw: RawProduct): Product | null {
       : [],
     variants: Array.isArray(raw.variants?.nodes) ? raw.variants.nodes : [],
     metafields: Array.isArray(raw.metafields) ? raw.metafields : [],
+    productRecommendations: Array.isArray(raw.productRecommendations) ? raw.productRecommendations : [],
   };
+}
+
+function getMetafieldValue(variant: ProductVariant | undefined, key: string): string | undefined {
+  if (!variant?.metafields || !Array.isArray(variant.metafields)) return undefined;
+  const found = variant.metafields.find((m) => m?.key === key && typeof m.value === 'string');
+  return found?.value;
 }
 
 function ProductDetail({ product }: { product: Product }) {
   const { addItem } = useCart();
   const images = product.images ?? [];
   const variants = product.variants ?? [];
+  const recommendations = product.productRecommendations ?? [];
   const [selectedVariantId, setSelectedVariantId] = useState<string>(variants[0]?.id ?? '');
   const [showSizeGuide, setShowSizeGuide] = useState(false);
   const [showVaultGate, setShowVaultGate] = useState(false);
@@ -90,6 +113,9 @@ function ProductDetail({ product }: { product: Product }) {
   } catch {
     sizeGuide = null;
   }
+
+  const glbSrc = getMetafieldValue(selectedVariant, 'glbSrc') || '/models/af1.glb';
+  const usdzSrc = getMetafieldValue(selectedVariant, 'usdzSrc');
 
   const price = selectedVariant?.price ?? product.priceRange.minVariantPrice;
 
@@ -117,7 +143,8 @@ function ProductDetail({ product }: { product: Product }) {
       <div className="mx-auto max-w-7xl grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-start">
         <div className="lg:col-span-7">
           <FloatingArtifact
-            glbSrc="/models/af1.glb"
+            glbSrc={glbSrc}
+            usdzSrc={usdzSrc}
             images={images}
             posterSrc={product.featuredImage?.url}
             altText={product.title}
@@ -203,6 +230,30 @@ function ProductDetail({ product }: { product: Product }) {
 
             <GothicButton label="Return to archive" href="/products" variant="ghost" />
           </div>
+
+          {recommendations.length > 0 && (
+            <div className="mt-10 space-y-4">
+              <p className="font-gothic-ui text-[11px] uppercase tracking-[0.18em] text-gray-500">Recommended</p>
+              <div className="grid grid-cols-2 gap-3">
+                {recommendations.slice(0, 4).map((rec) => {
+                  const amount = rec.priceRange?.minVariantPrice?.amount;
+                  const currency = rec.priceRange?.minVariantPrice?.currencyCode;
+                  return (
+                    <a
+                      key={rec.id}
+                      href={`/products/${rec.handle}`}
+                      className="border border-zinc-800 bg-zinc-900/60 p-3 hover:border-gray-600 transition-colors"
+                    >
+                      <p className="text-xs font-semibold tracking-wide uppercase line-clamp-1">{rec.title}</p>
+                      <p className="mt-2 text-[11px] font-mono text-gray-400">
+                        {amount} {currency}
+                      </p>
+                    </a>
+                  );
+                })}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
